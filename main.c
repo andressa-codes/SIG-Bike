@@ -34,6 +34,37 @@ void tela_sobre(){
     printf("\t\t\t>>> Tecle <ENTER> para continuar...\n");
     getchar();
 }
+void tela_equipe(){
+    system("clear||cls");
+    printf("\n");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    printf("///                                                                         ///\n");
+    printf("///             Universidade Federal do Rio Grande do Norte                 ///\n");
+    printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
+    printf("///               Departamento de Computação e Tecnologia                   ///\n");
+    printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
+    printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
+    printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
+    printf("///                                                                         ///\n");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    printf("///                                                                         ///\n");
+    printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
+    printf("///                                                                         ///\n");
+    printf("///                    Este projeto foi desenvolvido pelos alunos:          ///\n");
+    printf("///                                                                         ///\n");
+    printf("///                    -> Andressa Carla da Silva                           ///\n");
+    printf("///                       Email: andressa.silva.141@ufrn.edu.br             ///\n");
+    printf("///                       Redes sociais: @andressa-codes                    ///\n");
+    printf("///                                                                         ///\n");
+    printf("///                    -> Jezreel Asaias da Silva Souza                     ///\n");
+    printf("///                       Email: jezreel.asaias.silva.129@ufrn.edu.br       ///\n");
+    printf("///                       Redes sociais: @Jezreel-Asaias                    ///\n");
+    printf("///                                                                         ///\n");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    printf("\n");
+    printf("\t\t\t>>> Tecle <ENTER> para continuar...\n");
+    getchar();
+}
 
 int main() {
     int opcao;
@@ -64,10 +95,9 @@ int main() {
                 printf("Bem-vindo à tela principal.\n");
                 break;
             case 2:
-                printf("Bem-vindo à equipe de desenvolvimento.\n");
+                tela_equipe();
                 break;
             case 3:
-                printf("Bem-vindo à tela sobre o sistema.\n");
                 tela_sobre();
                 break;
             case 4:
