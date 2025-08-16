@@ -60,6 +60,8 @@ void tela_equipe(){
     printf("///                       Email: jezreel.asaias.silva.129@ufrn.edu.br       ///\n");
     printf("///                       Redes sociais: @Jezreel-Asaias                    ///\n");
     printf("///                                                                         ///\n");
+    printf("///                Git: https://github.com/andressa-codes/SIG-Bike.git      ///\n");
+    printf("///                                                                         ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
     printf("\n");
     printf("\t\t\t>>> Tecle <ENTER> para continuar...\n");
