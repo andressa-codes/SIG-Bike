@@ -15,12 +15,12 @@ void tela_principal(void) {
     printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
     printf("///               Departamento de Computação e Tecnologia                   ///\n");
     printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
-    printf("///                  Projeto Sistema de Gestão Escolar                      ///\n");
-    printf("///             Developed by @flgorgonio -- since Mar, 2020                 ///\n");
+    printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
+    printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
     printf("///                                                                         ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
     printf("///                                                                         ///\n");
-    printf("///            = = = = = Sistema de Gestão Escolar = = = = =                ///\n");
+    printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
     printf("///                                                                         ///\n");
     printf("///            1. Módulo categorias                                         ///\n");
     printf("///            2. Módulo bicicletas                                         ///\n");
