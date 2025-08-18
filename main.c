@@ -35,6 +35,7 @@ void tela_principal(void) {
     Enter();
 }
 
+
 void tela_sobre(){
     system("cls||clear");
     printf("\n");
@@ -61,6 +62,7 @@ void tela_sobre(){
     printf("///////////////////////////////////////////////////////////////////////////////\n");
     Enter();
 }
+
 
 void tela_equipe(){
     system("cls||clear");
