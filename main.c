@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void esperarEnter(void) {
+void Enter(void) {
     printf("\n\t\t>>> Tecle <ENTER> para continuar... \n");
     while (getchar() != '\n');
 }
@@ -32,7 +32,7 @@ void tela_principal(void) {
     printf("///                                                                         ///\n");
     printf("///            Escolha a opção desejada:                                    ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
-    esperarEnter();
+    Enter();
 }
 
 void tela_sobre(){
@@ -59,7 +59,7 @@ void tela_sobre(){
     printf("///  de gestão voltado a uma loja de bicicletas.                            ///\n");
     printf("///                                                                         ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
-    esperarEnter();
+    Enter();
 }
 
 void tela_equipe(){
@@ -91,7 +91,7 @@ void tela_equipe(){
     printf("///                Git: https://github.com/andressa-codes/SIG-Bike.git      ///\n");
     printf("///                                                                         ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
-    esperarEnter();
+    Enter();
 }
 
 int main() {
@@ -111,18 +111,18 @@ int main() {
 
         printf("Digite uma opção para prosseguir: ");
         if (scanf("%d", &opcao) != 1) {
-            while (getchar() != '\n'); // limpa buffer
+            while (getchar() != '\n');
             printf("Você escolheu uma opção que não existe. Por favor, tente novamente.\n");
-            esperarEnter();
+            Enter();
             opcao = 0;
             continue;
         }
 
-        while (getchar() != '\n'); // limpa buffer
+        while (getchar() != '\n');
 
         if (opcao < 1 || opcao > 4) {
             printf("Você escolheu uma opção que não existe. Por favor, tente novamente.\n");
-            esperarEnter();
+            Enter();
             opcao = 0;
             continue;
         }
