@@ -7,7 +7,7 @@ void Enter(void) {
 }
 
 void tela_principal(void) {
-    system("clear");
+    system("cls||clear");
     printf("\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
     printf("///                                                                         ///\n");
@@ -36,7 +36,7 @@ void tela_principal(void) {
 }
 
 void tela_sobre(){
-    system("clear");
+    system("cls||clear");
     printf("\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
     printf("///                                                                         ///\n");
@@ -63,7 +63,7 @@ void tela_sobre(){
 }
 
 void tela_equipe(){
-    system("clear");
+    system("cls||clear");
     printf("\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
     printf("///                                                                         ///\n");
@@ -98,7 +98,7 @@ int main() {
     int opcao;
 
     do {
-        system("clear");
+        system("cls||clear");
         printf("======================================\n");
         printf("==== Bem-vindo ao SIG-Bike! ===========\n");
         printf("======================================\n");
