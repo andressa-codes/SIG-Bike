@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void limparBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) {}
+void esperarEnter(void) {
+    printf("\n\t\t>>> Tecle <ENTER> para continuar... \n");
+    while (getchar() != '\n');
 }
 
 void tela_principal(void) {
@@ -32,10 +32,7 @@ void tela_principal(void) {
     printf("///                                                                         ///\n");
     printf("///            Escolha a opção desejada:                                    ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
-    printf("\n");
-    printf("\t\t>>> Tecle <ENTER> duas vezes para continuar...                             \n");
-    limparBuffer();
-    getchar();
+    esperarEnter();
 }
 
 void tela_sobre(){
@@ -62,10 +59,7 @@ void tela_sobre(){
     printf("///  de gestão voltado a uma loja de bicicletas.                            ///\n");
     printf("///                                                                         ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
-    printf("\n");
-    printf("\t\t>>> Tecle <ENTER> duas vezes para continuar...                             \n");
-    limparBuffer();
-    getchar();
+    esperarEnter();
 }
 
 void tela_equipe(){
@@ -97,10 +91,7 @@ void tela_equipe(){
     printf("///                Git: https://github.com/andressa-codes/SIG-Bike.git      ///\n");
     printf("///                                                                         ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
-    printf("\n");
-    printf("\t\t>>> Tecle <ENTER> duas vezes para continuar...                             \n");
-    limparBuffer();
-    getchar();
+    esperarEnter();
 }
 
 int main() {
@@ -120,20 +111,18 @@ int main() {
 
         printf("Digite uma opção para prosseguir: ");
         if (scanf("%d", &opcao) != 1) {
-            limparBuffer();
+            while (getchar() != '\n'); // limpa buffer
             printf("Você escolheu uma opção que não existe. Por favor, tente novamente.\n");
-            printf(">>> Tecle <ENTER> duas vezes para continuar...\n");
-            getchar();
+            esperarEnter();
             opcao = 0;
             continue;
         }
 
-        limparBuffer();
+        while (getchar() != '\n'); // limpa buffer
 
         if (opcao < 1 || opcao > 4) {
             printf("Você escolheu uma opção que não existe. Por favor, tente novamente.\n");
-            printf(">>> Tecle <ENTER> duas vezes para continuar...\n");
-            getchar();
+            esperarEnter();
             opcao = 0;
             continue;
         }
