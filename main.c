@@ -15,12 +15,12 @@ void tela_principal(void) {
     printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
     printf("///               Departamento de Computação e Tecnologia                   ///\n");
     printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
-    printf("///                  Projeto Sistema de Gestão Escolar                      ///\n");
-    printf("///             Developed by @flgorgonio -- since Mar, 2020                 ///\n");
+    printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
+    printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
     printf("///                                                                         ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
     printf("///                                                                         ///\n");
-    printf("///            = = = = = Sistema de Gestão Escolar = = = = =                ///\n");
+    printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
     printf("///                                                                         ///\n");
     printf("///            1. Módulo categorias                                         ///\n");
     printf("///            2. Módulo bicicletas                                         ///\n");
@@ -94,6 +94,34 @@ void tela_equipe(){
     Enter();
 }
 
+void tela_sair(){
+    system("cls||clear");
+    printf("\n");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    printf("///                                                                         ///\n");
+    printf("///             Universidade Federal do Rio Grande do Norte                 ///\n");
+    printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
+    printf("///               Departamento de Computação e Tecnologia                   ///\n");
+    printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
+    printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
+    printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
+    printf("///                                                                         ///\n");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    printf("///                                                                         ///\n");
+    printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
+    printf("///                                                                         ///\n");
+    printf("///   Muito obrigado por utilizar o nosso sistema, esperamos te ver         ///\n");
+    printf("///   novamente em breve.                                                   ///\n");
+    printf("///                                                                         ///\n");
+    printf("///                                                                         ///\n");
+    printf("///                                                                         ///\n");
+    printf("///                                                                         ///\n");
+    printf("///                                                                         ///\n");
+    printf("///                                                                         ///\n");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    Enter();
+}
+
 int main() {
     int opcao;
 
@@ -138,7 +166,7 @@ int main() {
                 tela_sobre();
                 break;
             case 4:
-                printf("Saindo do programa. Te vejo em breve!\n");
+                tela_sair();
                 break;
         }
     } while(opcao != 4);
