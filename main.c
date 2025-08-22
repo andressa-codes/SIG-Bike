@@ -54,26 +54,26 @@ void tela_principal(void) {
 
         switch(opcao) {
             case 1:
-                printf(">>> Módulo categorias em construção...\n");
+                printf(">>> Módulo categorias em criação...\n");
                 Enter();
                 break;
             case 2:
-                printf(">>> Módulo bicicletas em construção...\n");
+                printf(">>> Módulo bicicletas em criação...\n");
                 Enter();
                 break;
             case 3:
                 modulo_clientes();
                 break;
             case 4:
-                printf(">>> Módulo vendas em construção...\n");
+                printf(">>> Módulo vendas em criação...\n");
                 Enter();
                 break;
             case 5:
-                printf(">>> Módulo funcionários em construção...\n");
+                printf(">>> Módulo funcionários em criação...\n");
                 Enter();
                 break;
             case 6:
-                printf(">>> Módulo relatórios em construção...\n");
+                printf(">>> Módulo relatórios em criação...\n");
                 Enter();
                 break;
             case 7:
@@ -197,15 +197,15 @@ void modulo_clientes(void) {
 
         switch (opcao) {
             case 1:
-                printf(">>> Função cadastrar cliente (em construção)...\n");
+                printf(">>> Função cadastrar cliente (em criação)...\n");
                 Enter();
                 break;
             case 2:
-                printf(">>> Função ver clientes (em construção)...\n");
+                printf(">>> Função ver clientes (em criação)...\n");
                 Enter();
                 break;
             case 3:
-                printf(">>> Função excluir cliente (em construção)...\n");
+                printf(">>> Função excluir cliente (em criação)...\n");
                 Enter();
                 break;
             case 4:
