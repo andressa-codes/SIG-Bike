@@ -8,7 +8,7 @@ void tela_sobre(void);
 void tela_equipe(void);
 void tela_sair(void);
 
-void modulo_cliente(void);
+void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
 void tela_ver_clientes(void);
 void tela_excluir_cliente(void);
@@ -18,7 +18,6 @@ void Enter(void) {
     printf("\n\t\t>>> Tecle <ENTER> para continuar... \n");
     while (getchar() != '\n');
 }
-
 
 void tela_principal(void) {
     int opcao;
@@ -166,7 +165,6 @@ void tela_sair(){
     Enter();
 }
 
-
 void modulo_clientes(void) {
     int opcao;
 
@@ -218,7 +216,6 @@ void modulo_clientes(void) {
         }
     } while (opcao != 4);
 }
-
 
 int main() {
     int opcao;
