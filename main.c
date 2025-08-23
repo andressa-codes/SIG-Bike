@@ -294,8 +294,7 @@ void modulo_bicicletas(void) {
                 tela_cadastrar_bicicleta();
                 break;
             case 2:
-                printf("tela ver bicicletas");
-                Enter();
+                tela_ver_bicicletas();
                 break;
             case 3:
                 printf("tela pesquisar dados de uma bicicleta");
@@ -358,6 +357,21 @@ void tela_cadastrar_bicicleta(void){
     printf("\n===================================\n");
     printf("= Cadastro realizado com sucesso! =\n");
     printf("===================================\n");
+    Enter();
+}
+
+void tela_ver_bicicletas(void){
+    system("cls||clear");
+    printf("\n=== Bicicletas Cadastradas ===\n");
+    if(qtd_bicicletas == 0){
+        printf("Nenhuma bicicleta cadastrada.\n");
+    } else {
+        for(int i = 0; i < qtd_bicicletas; i++){
+            printf("%d. Marca: %s | Modelo: %s | Ano: %d | Cor: %s | Preço: R$ %.2f | Estoque: %d\n",
+                i+1, bicicletas[i].marca, bicicletas[i].modelo, bicicletas[i].ano, bicicletas[i].cor, bicicletas[i].preco, bicicletas[i].estoque
+            );
+        }
+    }
     Enter();
 }
 
