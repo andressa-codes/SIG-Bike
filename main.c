@@ -24,6 +24,9 @@ void tela_sobre(void);
 void tela_equipe(void);
 void tela_sair(void);
 
+// ASSINATURA DAS FUNÇÕES DO MODULO BICICLETAS
+void modulo_bicicletas(void);
+
 void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
 void tela_ver_clientes(void);
@@ -73,8 +76,7 @@ void tela_principal(void) {
                 Enter();
                 break;
             case 2:
-                printf(">>> Módulo bicicletas em criação...\n");
-                Enter();
+                modulo_bicicletas();
                 break;
             case 3:
                 modulo_clientes();
@@ -180,7 +182,7 @@ void tela_sair(){
     Enter();
 }
 
-
+// MODULOS
 void modulo_clientes(void) {
     int opcao;
 
@@ -231,6 +233,71 @@ void modulo_clientes(void) {
                 Enter();
         }
     } while(opcao != 4);
+}
+
+void modulo_bicicletas(void) {
+    int opcao;
+
+    do {
+        system("cls||clear");
+        printf("\n");
+        printf("///////////////////////////////////////////////////////////////////////////////\n");
+        printf("///                                                                         ///\n");
+        printf("///             Universidade Federal do Rio Grande do Norte                 ///\n");
+        printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
+        printf("///               Departamento de Computação e Tecnologia                   ///\n");
+        printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
+        printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
+        printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
+        printf("///                                                                         ///\n");
+        printf("///////////////////////////////////////////////////////////////////////////////\n");
+        printf("///                                                                         ///\n");
+        printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
+        printf("///                                                                         ///\n");
+        printf("///            1. Cadastrar bicicleta                                       ///\n");
+        printf("///            2. Ver bicicletas cadastradas                                ///\n");
+        printf("///            3. Pesquisar dados de uma bicicleta                          ///\n");
+        printf("///            4. Editar dados de uma bicicleta                             ///\n");
+        printf("///            5. Excluir bicicleta do sistema                              ///\n");
+        printf("///            6. Voltar para o menu principal                              ///\n");
+        printf("///                                                                         ///\n");
+        printf("///            Escolha a opção desejada:                                    ///\n");
+        printf("///                                                                         ///\n");
+        printf("///////////////////////////////////////////////////////////////////////////////\n");
+        if(scanf("%d", &opcao) != 1){
+            while(getchar() != '\n');
+            opcao = 0;
+        }
+        while(getchar() != '\n');
+
+        switch(opcao){
+            case 1:
+                printf("tela cadastrar bicicleta\n");
+                Enter();
+                break;
+            case 2:
+                printf("tela ver bicicletas");
+                Enter();
+                break;
+            case 3:
+                printf("tela pesquisar dados de uma bicicleta");
+                Enter();
+                break;
+            case 4:
+                printf("tela editar dados de uma bicicleta");
+                Enter();
+                break;
+            case 5:
+                printf("tela excluir bicicleta do sistema");
+                Enter();
+                break;
+            case 6:
+                return;
+            default:
+                printf("Opção inválida!\n");
+                Enter();
+        }
+    } while(opcao != 6);
 }
 
 void tela_cadastrar_cliente(void){
