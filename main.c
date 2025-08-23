@@ -8,6 +8,11 @@
 #define TAM_CIDADE 50
 #define TAM_CPF 15
 
+#define MAX_BICICLETAS 200
+#define TAM_MARCA 50
+#define TAM_MODELO 50
+#define TAM_COR 30
+
 typedef struct {
     char nome[TAM_NOME];
     char email[TAM_EMAIL];
@@ -18,6 +23,18 @@ typedef struct {
 Cliente clientes[MAX_CLIENTES];
 int qtd_clientes = 0;
 
+typedef struct {
+    char marca[TAM_MARCA];
+    char modelo[TAM_MODELO];
+    int ano;
+    char cor[TAM_COR];
+    float preco;
+    int estoque;
+} Bicicleta;
+
+Bicicleta bicicletas[MAX_BICICLETAS];
+int qtd_bicicletas = 0;
+
 // ==== Assinaturas das funções ====
 void tela_principal(void);
 void tela_sobre(void);
@@ -26,6 +43,8 @@ void tela_sair(void);
 
 // ASSINATURA DAS FUNÇÕES DO MODULO BICICLETAS
 void modulo_bicicletas(void);
+void tela_cadastrar_bicicleta(void);
+void tela_ver_bicicletas(void);
 
 void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
@@ -272,8 +291,7 @@ void modulo_bicicletas(void) {
 
         switch(opcao){
             case 1:
-                printf("tela cadastrar bicicleta\n");
-                Enter();
+                tela_cadastrar_bicicleta();
                 break;
             case 2:
                 printf("tela ver bicicletas");
@@ -298,6 +316,49 @@ void modulo_bicicletas(void) {
                 Enter();
         }
     } while(opcao != 6);
+}
+
+void tela_cadastrar_bicicleta(void){
+    system("cls||clear");
+    if(qtd_bicicletas >= MAX_BICICLETAS){
+        printf("Limite de bicicletas atingido!\n");
+        Enter();
+        return;
+    }
+
+    Bicicleta novo;
+    char entrada[50]; 
+
+    printf("Marca: ");
+    fgets(novo.marca, TAM_MARCA, stdin);
+    novo.marca[strcspn(novo.marca, "\n")] = 0;
+
+    printf("Modelo: ");
+    fgets(novo.modelo, TAM_MODELO, stdin);
+    novo.modelo[strcspn(novo.modelo, "\n")] = 0;
+
+    printf("Ano: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    novo.ano = atoi(entrada);   
+
+    printf("Cor: ");
+    fgets(novo.cor, TAM_COR, stdin);
+    novo.cor[strcspn(novo.cor, "\n")] = 0;
+
+    printf("Preço: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    novo.preco = atof(entrada); 
+
+    printf("Quantidade em estoque: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    novo.estoque = atoi(entrada);
+
+    bicicletas[qtd_bicicletas++] = novo;
+
+    printf("\n===================================\n");
+    printf("= Cadastro realizado com sucesso! =\n");
+    printf("===================================\n");
+    Enter();
 }
 
 void tela_cadastrar_cliente(void){
