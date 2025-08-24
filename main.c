@@ -30,6 +30,7 @@ typedef struct {
     char cor[TAM_COR];
     float preco;
     int estoque;
+    int id;
 } Bicicleta;
 
 Bicicleta bicicletas[MAX_BICICLETAS];
@@ -45,6 +46,7 @@ void tela_sair(void);
 void modulo_bicicletas(void);
 void tela_cadastrar_bicicleta(void);
 void tela_ver_bicicletas(void);
+void tela_pesquisar_bicicleta();
 
 void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
@@ -297,8 +299,7 @@ void modulo_bicicletas(void) {
                 tela_ver_bicicletas();
                 break;
             case 3:
-                printf("tela pesquisar dados de uma bicicleta");
-                Enter();
+                tela_pesquisar_bicicleta();
                 break;
             case 4:
                 printf("tela editar dados de uma bicicleta");
@@ -327,6 +328,7 @@ void tela_cadastrar_bicicleta(void){
 
     Bicicleta novo;
     char entrada[50]; 
+    novo.id = qtd_bicicletas + 1;
 
     printf("Marca: ");
     fgets(novo.marca, TAM_MARCA, stdin);
@@ -356,6 +358,7 @@ void tela_cadastrar_bicicleta(void){
 
     printf("\n===================================\n");
     printf("= Cadastro realizado com sucesso! =\n");
+    printf("= ID da bicicleta: %d\n", novo.id);
     printf("===================================\n");
     Enter();
 }
@@ -371,6 +374,42 @@ void tela_ver_bicicletas(void){
                 i+1, bicicletas[i].marca, bicicletas[i].modelo, bicicletas[i].ano, bicicletas[i].cor, bicicletas[i].preco, bicicletas[i].estoque
             );
         }
+    }
+    Enter();
+}
+
+void tela_pesquisar_bicicleta(void){
+    system("cls||clear");
+    
+    if(qtd_bicicletas == 0){
+        printf("Nenhuma bicicleta cadastrada.\n");
+        Enter();
+        return;
+    }
+
+    int id;
+    char entrada[50];
+
+    printf("Digite o ID da bicicleta que deseja visualizar: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    id = atoi(entrada);
+
+    int encontrado = -1;
+    for(int i = 0; i < qtd_bicicletas; i++){
+        if(bicicletas[i].id == id){
+            encontrado = i;
+            break;
+        }
+    }
+
+    if(encontrado == -1){
+        printf("\nBicicleta com ID %d não encontrada.\n", id);
+    } else {
+        int i = encontrado;
+        printf("%d. Marca: %s | Modelo: %s | Ano: %d | Cor: %s | Preço: R$ %.2f | Estoque: %d\n",
+            bicicletas[i].id, bicicletas[i].marca, bicicletas[i].modelo, bicicletas[i].ano, 
+            bicicletas[i].cor, bicicletas[i].preco, bicicletas[i].estoque
+        );
     }
     Enter();
 }
