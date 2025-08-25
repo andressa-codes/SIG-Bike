@@ -46,8 +46,10 @@ void tela_sair(void);
 void modulo_bicicletas(void);
 void tela_cadastrar_bicicleta(void);
 void tela_ver_bicicletas(void);
-void tela_pesquisar_bicicleta();
-void tela_editar_bicicleta();
+void tela_pesquisar_bicicleta(void);
+void tela_editar_bicicleta(void);
+void tela_excluir_bicicleta(void);
+
 
 void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
@@ -306,8 +308,7 @@ void modulo_bicicletas(void) {
                 tela_editar_bicicleta();
                 break;
             case 5:
-                printf("tela excluir bicicleta do sistema");
-                Enter();
+                tela_excluir_bicicleta();
                 break;
             case 6:
                 return;
@@ -471,6 +472,48 @@ void tela_editar_bicicleta(void){
     printf("=======================================\n");
     printf("=    Edição realizada com sucesso!    =\n");
     printf("=====================================\n");
+    Enter();
+}
+
+void tela_excluir_bicicleta(void){
+    system("cls||clear");
+
+    if(qtd_bicicletas == 0){
+        printf("Nenhuma bicicleta cadastrada para excluir.\n");
+        Enter();
+        return;
+    }
+
+    char entrada[50];
+    int id;
+    printf("Digite o ID da bicicleta para excluir: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    id = atoi(entrada);
+
+    int encontrado = -1;
+    for(int i = 0; i < qtd_bicicletas; i++){
+        if(bicicletas[i].id == id){
+            encontrado = i;
+            break;
+        }
+    }
+
+    system("cls||clear");
+    if(encontrado == -1){
+        printf("=============================\n");
+        printf("= Bicicleta não encontrada! =\n");
+        printf("=============================\n");
+    } else {
+
+        for(int i = encontrado; i < qtd_bicicletas - 1; i++){
+            bicicletas[i] = bicicletas[i+1];
+        }
+        qtd_bicicletas--; 
+
+        printf("===================================\n");
+        printf("= Exclusão realizada com sucesso! =\n");
+        printf("===================================\n");
+    }
     Enter();
 }
 
