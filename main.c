@@ -55,6 +55,7 @@ void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
 void tela_ver_clientes(void);
 void tela_pesquisar_cliente(void);
+void tela_editar_cliente(void);
 void tela_excluir_cliente(void);
 
 void Enter(void) {
@@ -254,7 +255,7 @@ void modulo_clientes(void) {
                 tela_pesquisar_cliente();
                 break;
             case 4:
-                //tela_editar_cliente();
+                tela_editar_cliente();
                 break;
             case 5:
                 tela_excluir_cliente();
@@ -604,6 +605,58 @@ void tela_pesquisar_cliente(void){
             clientes[i].nome, clientes[i].cidade, clientes[i].email, clientes[i].cpf
         );
     }
+    Enter();
+}
+
+void tela_editar_cliente(void){
+    system("cls||clear");
+
+    if(qtd_clientes == 0){
+        printf("Nenhum cliente cadastrado.\n");
+        Enter();
+        return;
+    }
+
+    char cpf[TAM_CPF];
+    printf("Digite o CPF do cliente que deseja editar: ");
+    fgets(cpf, TAM_CPF, stdin);
+    cpf[strcspn(cpf, "\n")] = 0; 
+
+    int encontrado = -1;
+    for(int i = 0; i < qtd_clientes; i++){
+        if(strcmp(clientes[i].cpf, cpf) == 0){
+            encontrado = i;
+            break;
+        }
+    }
+
+    if(encontrado == -1){
+        printf("\nCliente com CPF %s não encontrado.\n", cpf);
+        Enter();
+        return;
+    }
+
+    Cliente *c = &clientes[encontrado];
+
+    printf("Nome: ");
+    fgets(c->nome, TAM_NOME, stdin);
+    c->nome[strcspn(c->nome, "\n")] = 0;
+
+    printf("Email: ");
+    fgets(c->email, TAM_EMAIL, stdin);
+    c->email[strcspn(c->email, "\n")] = 0;
+
+    printf("Cidade: ");
+    fgets(c->cidade, TAM_CIDADE, stdin);
+    c->cidade[strcspn(c->cidade, "\n")] = 0;
+
+    printf("CPF (apenas números): ");
+    fgets(c->cpf, TAM_CPF, stdin);
+    c->cpf[strcspn(c->cpf, "\n")] = 0;
+
+    printf("=======================================\n");
+    printf("=    Edição realizada com sucesso!    =\n");
+    printf("=======================================\n");
     Enter();
 }
 
