@@ -54,6 +54,7 @@ void tela_excluir_bicicleta(void);
 void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
 void tela_ver_clientes(void);
+void tela_pesquisar_cliente(void);
 void tela_excluir_cliente(void);
 
 void Enter(void) {
@@ -228,8 +229,10 @@ void modulo_clientes(void) {
         printf("///                                                                         ///\n");
         printf("///            1. Cadastrar cliente                                         ///\n");
         printf("///            2. Ver clientes cadastrados                                  ///\n");
-        printf("///            3. Excluir cliente do sistema                                ///\n");
-        printf("///            4. Voltar para o menu principal                              ///\n");
+        printf("///            3. Pesquisar dados de um cliente                             ///\n");
+        printf("///            4. Editar dados de um cliente                                ///\n");
+        printf("///            5. Excluir cliente do sistema                                ///\n");
+        printf("///            6. Voltar para o menu principal                              ///\n");
         printf("///                                                                         ///\n");
         printf("///            Escolha a opção desejada:                                    ///\n");
         printf("///                                                                         ///\n");
@@ -248,15 +251,21 @@ void modulo_clientes(void) {
                 tela_ver_clientes();
                 break;
             case 3:
-                tela_excluir_cliente();
+                tela_pesquisar_cliente();
                 break;
             case 4:
+                //tela_editar_cliente();
+                break;
+            case 5:
+                tela_excluir_cliente();
+                break;
+            case 6: 
                 return;
             default:
                 printf("Opção inválida!\n");
                 Enter();
         }
-    } while(opcao != 4);
+    } while(opcao != 6);
 }
 
 void modulo_bicicletas(void) {
@@ -318,7 +327,7 @@ void modulo_bicicletas(void) {
         }
     } while(opcao != 6);
 }
-
+//FUNÇÕES DO MODULO BICICLETA
 void tela_cadastrar_bicicleta(void){
     system("cls||clear");
     if(qtd_bicicletas >= MAX_BICICLETAS){
@@ -517,6 +526,7 @@ void tela_excluir_bicicleta(void){
     Enter();
 }
 
+//FUNÇÕES DO MODULO CLIENTES
 void tela_cadastrar_cliente(void){
     system("cls||clear");
     if(qtd_clientes >= MAX_CLIENTES){
@@ -561,6 +571,38 @@ void tela_ver_clientes(void){
             printf("%d. Nome: %s | Email: %s | Cidade: %s | CPF: %s\n",
                 i+1, clientes[i].nome, clientes[i].email, clientes[i].cidade, clientes[i].cpf);
         }
+    }
+    Enter();
+}
+void tela_pesquisar_cliente(void){
+    system("cls||clear");
+
+    if(qtd_clientes == 0){
+        printf("Nenhum cliente cadastrado.\n");
+        Enter();
+        return;
+    }
+
+    char cpf[TAM_CPF];
+    printf("Digite o CPF do cliente que deseja visualizar: ");
+    fgets(cpf, TAM_CPF, stdin);
+    cpf[strcspn(cpf, "\n")] = 0;   
+
+    int encontrado = -1;
+    for(int i = 0; i < qtd_clientes; i++){
+        if(strcmp(clientes[i].cpf, cpf) == 0){
+            encontrado = i;
+            break;
+        }
+    }
+
+    if(encontrado == -1){
+        printf("\nCliente com CPF %s não encontrado.\n", cpf);
+    } else {
+        int i = encontrado;
+        printf("Nome: %s | cidade: %s | Email: %s | CPF: %s \n",
+            clientes[i].nome, clientes[i].cidade, clientes[i].email, clientes[i].cpf
+        );
     }
     Enter();
 }
