@@ -47,6 +47,7 @@ void modulo_bicicletas(void);
 void tela_cadastrar_bicicleta(void);
 void tela_ver_bicicletas(void);
 void tela_pesquisar_bicicleta();
+void tela_editar_bicicleta();
 
 void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
@@ -302,8 +303,7 @@ void modulo_bicicletas(void) {
                 tela_pesquisar_bicicleta();
                 break;
             case 4:
-                printf("tela editar dados de uma bicicleta");
-                Enter();
+                tela_editar_bicicleta();
                 break;
             case 5:
                 printf("tela excluir bicicleta do sistema");
@@ -411,6 +411,66 @@ void tela_pesquisar_bicicleta(void){
             bicicletas[i].cor, bicicletas[i].preco, bicicletas[i].estoque
         );
     }
+    Enter();
+}
+
+void tela_editar_bicicleta(void){
+    system("cls||clear");
+    if(qtd_bicicletas == 0){
+        printf("Nenhuma bicicleta cadastrada.\n");
+        Enter();
+        return;
+    }
+
+    char entrada[50];
+    int id;
+    printf("Digite o ID da bicicleta que deseja editar: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    id = atoi(entrada);
+
+    int encontrado = -1;
+    for(int i = 0; i < qtd_bicicletas; i++){
+        if(bicicletas[i].id == id){
+            encontrado = i;
+            break;
+        }
+    }
+
+    if(encontrado == -1){
+        printf("\nBicicleta com ID %d não encontrada.\n", id);
+        Enter();
+        return;
+    }
+
+    Bicicleta *b = &bicicletas[encontrado];
+
+    printf("Marca: ");
+    fgets(b->marca, TAM_MARCA, stdin);
+    b->marca[strcspn(b->marca, "\n")] = 0;
+
+    printf("Modelo: ");
+    fgets(b->modelo, TAM_MODELO, stdin);
+    b->modelo[strcspn(b->modelo, "\n")] = 0;
+
+    printf("Ano: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    b->ano = atoi(entrada);   
+
+    printf("Cor: ");
+    fgets(b->cor, TAM_COR, stdin);
+    b->cor[strcspn(b->cor, "\n")] = 0;
+
+    printf("Preço: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    b->preco = atof(entrada); 
+
+    printf("Quantidade em estoque: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    b->estoque = atoi(entrada);
+
+    printf("=======================================\n");
+    printf("=    Edição realizada com sucesso!    =\n");
+    printf("=====================================\n");
     Enter();
 }
 
