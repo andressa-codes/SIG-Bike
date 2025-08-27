@@ -36,13 +36,13 @@ typedef struct {
 Bicicleta bicicletas[MAX_BICICLETAS];
 int qtd_bicicletas = 0;
 
-// ==== Assinaturas das funções ====
+// ==== ASSINATURA DAS FUNÇÔES PRINCIPAIS ====
 void tela_principal(void);
 void tela_sobre(void);
 void tela_equipe(void);
 void tela_sair(void);
 
-// ASSINATURA DAS FUNÇÕES DO MODULO BICICLETAS
+// ==== ASSINATURA DAS FUNÇÕES DO MODULO BICICLETAS ====
 void modulo_bicicletas(void);
 void tela_cadastrar_bicicleta(void);
 void tela_ver_bicicletas(void);
@@ -50,7 +50,7 @@ void tela_pesquisar_bicicleta(void);
 void tela_editar_bicicleta(void);
 void tela_excluir_bicicleta(void);
 
-
+// ==== ASSINATURA DAS FUNÇÕES DO MODULO CLIENTES ====
 void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
 void tela_ver_clientes(void);
@@ -82,13 +82,12 @@ void tela_principal(void) {
         printf("///                                                                         ///\n");
         printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
         printf("///                                                                         ///\n");
-        printf("///            1. Módulo categorias                                         ///\n");
-        printf("///            2. Módulo bicicletas                                         ///\n");
-        printf("///            3. Módulo clientes                                           ///\n");
-        printf("///            4. Módulo vendas                                             ///\n");
-        printf("///            5. Módulo funcionários                                       ///\n");
-        printf("///            6. Módulo Relatórios                                         ///\n");
-        printf("///            7. Voltar ao menu principal                                  ///\n");
+        printf("///            1. Módulo bicicletas                                         ///\n");
+        printf("///            2. Módulo clientes                                           ///\n");
+        printf("///            3. Módulo vendas                                             ///\n");
+        printf("///            4. Módulo funcionários                                       ///\n");
+        printf("///            5. Módulo Relatórios                                         ///\n");
+        printf("///            6. Voltar ao menu principal                                  ///\n");
         printf("///                                                                         ///\n");
         printf("///            Escolha a opção desejada:                                    ///\n");
         printf("///                                                                         ///\n");
@@ -98,28 +97,24 @@ void tela_principal(void) {
 
         switch(opcao) {
             case 1:
-                printf(">>> Módulo categorias em criação...\n");
-                Enter();
-                break;
-            case 2:
                 modulo_bicicletas();
                 break;
-            case 3:
+            case 2:
                 modulo_clientes();
                 break;
-            case 4:
+            case 3:
                 printf(">>> Módulo vendas em criação...\n");
                 Enter();
                 break;
-            case 5:
+            case 4:
                 printf(">>> Módulo funcionários em criação...\n");
                 Enter();
                 break;
-            case 6:
+            case 5:
                 printf(">>> Módulo relatórios em criação...\n");
                 Enter();
                 break;
-            case 7:
+            case 6:
                 return;
             default:
                 printf("Opção inválida! Tente novamente.\n");
@@ -208,7 +203,7 @@ void tela_sair(){
     Enter();
 }
 
-// MODULOS
+
 void modulo_clientes(void) {
     int opcao;
 
@@ -328,7 +323,7 @@ void modulo_bicicletas(void) {
         }
     } while(opcao != 6);
 }
-//FUNÇÕES DO MODULO BICICLETA
+
 void tela_cadastrar_bicicleta(void){
     system("cls||clear");
     if(qtd_bicicletas >= MAX_BICICLETAS){
@@ -368,7 +363,7 @@ void tela_cadastrar_bicicleta(void){
     bicicletas[qtd_bicicletas++] = novo;
 
     printf("\n===================================\n");
-    printf("= Cadastro realizado com sucesso! =\n");
+    printf("= Cadastro realizado com sucesso!   =\n");
     printf("= ID da bicicleta: %d\n", novo.id);
     printf("===================================\n");
     Enter();
@@ -481,7 +476,7 @@ void tela_editar_bicicleta(void){
 
     printf("=======================================\n");
     printf("=    Edição realizada com sucesso!    =\n");
-    printf("=====================================\n");
+    printf("=======================================\n");
     Enter();
 }
 
