@@ -36,13 +36,14 @@ typedef struct {
 Bicicleta bicicletas[MAX_BICICLETAS];
 int qtd_bicicletas = 0;
 
-// ==== ASSINATURA DAS FUNÇÔES PRINCIPAIS ====
+// ==== Assinaturas de funções ====
+// Funções principais (telas)
 void tela_principal(void);
 void tela_sobre(void);
 void tela_equipe(void);
 void tela_sair(void);
 
-// ==== ASSINATURA DAS FUNÇÕES DO MODULO BICICLETAS ====
+// Módulo bicicletas
 void modulo_bicicletas(void);
 void tela_cadastrar_bicicleta(void);
 void tela_ver_bicicletas(void);
@@ -50,7 +51,7 @@ void tela_pesquisar_bicicleta(void);
 void tela_editar_bicicleta(void);
 void tela_excluir_bicicleta(void);
 
-// ==== ASSINATURA DAS FUNÇÕES DO MODULO CLIENTES ====
+// Módulo clientes
 void modulo_clientes(void);
 void tela_cadastrar_cliente(void);
 void tela_ver_clientes(void);
@@ -58,6 +59,15 @@ void tela_pesquisar_cliente(void);
 void tela_editar_cliente(void);
 void tela_excluir_cliente(void);
 
+// Módulo funcionários (protótipos sem implementação completa (apenas menu simples))
+void modulo_funcionarios(void);
+void tela_cadastrar_funcionario(void);
+void tela_ver_funcionarios(void);
+void tela_pesquisar_funcionario(void);
+void tela_editar_funcionario(void);
+void tela_excluir_funcionario(void);
+
+void Enter(void);
 void Enter(void) {
     printf("\n\t\t>>> Tecle <ENTER> para continuar... \n");
     while (getchar() != '\n');
@@ -92,7 +102,10 @@ void tela_principal(void) {
         printf("///            Escolha a opção desejada:                                    ///\n");
         printf("///                                                                         ///\n");
         printf("///////////////////////////////////////////////////////////////////////////////\n");
-        scanf("%d", &opcao);
+        if (scanf("%d", &opcao) != 1) {
+            while (getchar() != '\n');
+            opcao = 0;
+        }
         while (getchar() != '\n');
 
         switch(opcao) {
@@ -107,8 +120,7 @@ void tela_principal(void) {
                 Enter();
                 break;
             case 4:
-                printf(">>> Módulo funcionários em criação...\n");
-                Enter();
+                modulo_funcionarios();
                 break;
             case 5:
                 printf(">>> Módulo relatórios em criação...\n");
@@ -120,7 +132,7 @@ void tela_principal(void) {
                 printf("Opção inválida! Tente novamente.\n");
                 Enter();
         }
-    } while (opcao != 7);
+    } while (opcao != 6);
 }
 
 void tela_sobre(){
@@ -263,6 +275,36 @@ void modulo_clientes(void) {
         }
     } while(opcao != 6);
 }
+
+void modulo_funcionarios(void) {
+    system("cls||clear");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    printf("///                                                                         ///\n");
+    printf("///             Universidade Federal do Rio Grande do Norte                 ///\n");
+    printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
+    printf("///               Departamento de Computação e Tecnologia                   ///\n");
+    printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
+    printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
+    printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
+    printf("///                                                                         ///\n");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    printf("///                                                                         ///\n");
+    printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
+    printf("///                                                                         ///\n");
+    printf("///            1. Cadastrar funcionários                                    ///\n");
+    printf("///            2. Ver funcionários cadastrados                              ///\n");
+    printf("///            3. Pesquisar dados de um funcionário                         ///\n");
+    printf("///            4. Editar dados de um funcionário                            ///\n");
+    printf("///            5. Excluir funcionários do sistema                           ///\n");
+    printf("///            6. Voltar para o menu principal                              ///\n");
+    printf("///                                                                         ///\n");
+    printf("///            Escolha a opção desejada:                                    ///\n");
+    printf("///                                                                         ///\n");
+    printf("///////////////////////////////////////////////////////////////////////////////\n");
+    printf("\n");
+    Enter();
+}
+
 
 void modulo_bicicletas(void) {
     int opcao;
@@ -522,7 +564,7 @@ void tela_excluir_bicicleta(void){
     Enter();
 }
 
-//FUNÇÕES DO MODULO CLIENTES
+
 void tela_cadastrar_cliente(void){
     system("cls||clear");
     if(qtd_clientes >= MAX_CLIENTES){
@@ -570,6 +612,7 @@ void tela_ver_clientes(void){
     }
     Enter();
 }
+
 void tela_pesquisar_cliente(void){
     system("cls||clear");
 
