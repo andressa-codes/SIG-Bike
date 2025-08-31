@@ -83,6 +83,7 @@ void tela_excluir_cliente(void);
 // Módulo vendas
 void modulo_vendas(void);
 void tela_cadastrar_venda(void);
+void tela_ver_vendas(void);
 
 // Módulo funcionários
 void modulo_funcionarios(void);
@@ -999,7 +1000,7 @@ void modulo_vendas(void) {
                 tela_cadastrar_venda();
                 break;
             case 2:
-                //tela_ver_vendas();
+                tela_ver_vendas();
                 break;
             case 3:
                 //tela_pesquisar_venda();
@@ -1106,7 +1107,19 @@ void tela_cadastrar_venda(void){
     printf("=   Cadastro realizado com sucesso!   =\n");
     printf("=======================================\n");
     Enter();
-
+}
+void tela_ver_vendas(void){
+    system("cls||clear");
+    printf("\n=== Vendas cadastradas ===\n");
+    if(qtd_vendas == 0){
+        printf("Nenhum venda cadastrada.\n");
+    } else {
+        for(int i = 0; i < qtd_vendas; i++){
+            printf("%d. CPF do cliente: %s | CPF do funcionário: %s | ID da bicicleta: %d | Quantidade comprada: %d | Valor total da compra: %.2f R$\n",
+                vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario, vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total);
+        }
+    }
+    Enter();
 }
 
 int main() {
