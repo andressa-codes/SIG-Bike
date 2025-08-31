@@ -19,7 +19,9 @@
 #define TAM_CARGO 30
 #define TAM_CPF_FUNC 15
 
+#define MAX_VENDAS 500
 
+//Structs
 typedef struct {
     char nome[TAM_NOME];
     char email[TAM_EMAIL];
@@ -42,6 +44,18 @@ typedef struct {
 
 Bicicleta bicicletas[MAX_BICICLETAS];
 int qtd_bicicletas = 0;
+
+typedef struct {                 
+    char cpf_cliente[TAM_CPF];   
+    char cpf_funcionario[TAM_CPF_FUNC]; 
+    int id_bicicleta;         
+    int quantidade;           
+    float valor_total;   
+    int id;      
+} Venda;
+
+Venda vendas[MAX_VENDAS];
+int qtd_vendas = 0;
 
 // ==== Assinaturas de funções ====
 // Funções principais
@@ -66,6 +80,9 @@ void tela_pesquisar_cliente(void);
 void tela_editar_cliente(void);
 void tela_excluir_cliente(void);
 
+// Módulo vendas
+void modulo_vendas(void);
+
 // Módulo funcionários
 void modulo_funcionarios(void);
 void tela_cadastrar_funcionario(void);
@@ -73,6 +90,8 @@ void tela_ver_funcionarios(void);
 void tela_pesquisar_funcionario(void);
 void tela_editar_funcionario(void);
 void tela_excluir_funcionario(void);
+
+
 
 void Enter(void);
 void Enter(void) {
@@ -123,7 +142,7 @@ void tela_principal(void) {
                 modulo_clientes();
                 break;
             case 3:
-                printf(">>> Módulo vendas em criação...\n");
+                modulo_vendas();
                 Enter();
                 break;
             case 4:
@@ -940,6 +959,65 @@ void tela_excluir_cliente(void){
     Enter();
 }
 
+void modulo_vendas(void) {
+    int opcao;
+
+    do {
+        system("cls||clear");
+        printf("\n");
+        printf("///////////////////////////////////////////////////////////////////////////////\n");
+        printf("///                                                                         ///\n");
+        printf("///             Universidade Federal do Rio Grande do Norte                 ///\n");
+        printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
+        printf("///               Departamento de Computação e Tecnologia                   ///\n");
+        printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
+        printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
+        printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
+        printf("///                                                                         ///\n");
+        printf("///////////////////////////////////////////////////////////////////////////////\n");
+        printf("///                                                                         ///\n");
+        printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
+        printf("///                                                                         ///\n");
+        printf("///            1. Cadastrar venda                                           ///\n");
+        printf("///            2. Ver vendas cadastradas                                    ///\n");
+        printf("///            3. Pesquisar dados de uma venda                              ///\n");
+        printf("///            4. Editar dados de uma venda                                 ///\n");
+        printf("///            5. Excluir venda do sistema                                  ///\n");
+        printf("///            6. Voltar para o menu principal                              ///\n");
+        printf("///                                                                         ///\n");
+        printf("///            Escolha a opção desejada:                                    ///\n");
+        printf("///                                                                         ///\n");
+        printf("///////////////////////////////////////////////////////////////////////////////\n");
+        if(scanf("%d", &opcao) != 1){
+            while(getchar() != '\n');
+            opcao = 0;
+        }
+        while(getchar() != '\n');
+
+        switch(opcao){
+            case 1:
+                //tela_cadastrar_venda();
+                break;
+            case 2:
+                //tela_ver_vendas();
+                break;
+            case 3:
+                //tela_pesquisar_venda();
+                break;
+            case 4:
+                //tela_editar_venda();
+                break;
+            case 5:
+                //tela_excluir_venda();
+                break;
+            case 6:
+                return;
+            default:
+                printf("Opção inválida!\n");
+                Enter();
+        }
+    } while(opcao != 6);
+}
 
 int main() {
     int opcao;
