@@ -84,6 +84,7 @@ void tela_excluir_cliente(void);
 void modulo_vendas(void);
 void tela_cadastrar_venda(void);
 void tela_ver_vendas(void);
+void tela_pesquisar_venda(void);
 
 // Módulo funcionários
 void modulo_funcionarios(void);
@@ -1003,7 +1004,7 @@ void modulo_vendas(void) {
                 tela_ver_vendas();
                 break;
             case 3:
-                //tela_pesquisar_venda();
+                tela_pesquisar_venda();
                 break;
             case 4:
                 //tela_editar_venda();
@@ -1118,6 +1119,40 @@ void tela_ver_vendas(void){
             printf("%d. CPF do cliente: %s | CPF do funcionário: %s | ID da bicicleta: %d | Quantidade comprada: %d | Valor total da compra: %.2f R$\n",
                 vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario, vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total);
         }
+    }
+    Enter();
+}
+void tela_pesquisar_venda(void){
+    system("cls||clear");
+    
+    if(qtd_vendas == 0){
+        printf("Nenhuma venda cadastrada.\n");
+        Enter();
+        return;
+    }
+
+    int id;
+    char entrada[50];
+
+    printf("Digite o ID da venda que deseja visualizar: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    id = atoi(entrada);
+
+    int encontrado = -1;
+    for(int i = 0; i < qtd_vendas; i++){
+        if(vendas[i].id == id){
+            encontrado = i;
+            break;
+        }
+    }
+
+    if(encontrado == -1){
+        printf("\nVenda com ID %d não encontrada.\n", id);
+    } else {
+        int i = encontrado;
+        printf("%d. CPF do cliente: %s | CPF do funcionário: %s | ID da bicicleta: %d | Quantidade comprada: %d | Valor total da compra: R$ %.2f\n",
+            vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario, vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total
+        );
     }
     Enter();
 }
