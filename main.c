@@ -86,6 +86,7 @@ void tela_cadastrar_venda(void);
 void tela_ver_vendas(void);
 void tela_pesquisar_venda(void);
 void tela_editar_venda(void);
+void tela_excluir_venda(void);
 
 // Módulo funcionários
 void modulo_funcionarios(void);
@@ -1011,7 +1012,7 @@ void modulo_vendas(void) {
                 tela_editar_venda();
                 break;
             case 5:
-                //tela_excluir_venda();
+                tela_excluir_venda();
                 break;
             case 6:
                 return;
@@ -1261,6 +1262,48 @@ void tela_editar_venda(void){
     printf("=======================================\n");
     printf("=    Edição realizada com sucesso!    =\n");
     printf("=======================================\n");
+    Enter();
+}
+
+void tela_excluir_venda(void){
+    system("cls||clear");
+
+    if(qtd_vendas == 0){
+        printf("Nenhuma venda cadastrada para excluir.\n");
+        Enter();
+        return;
+    }
+
+    char entrada[50];
+    int id;
+    printf("Digite o ID da venda para excluir: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    id = atoi(entrada);
+
+    int encontrado = -1;
+    for(int i = 0; i < qtd_vendas; i++){
+        if(vendas[i].id == id){
+            encontrado = i;
+            break;
+        }
+    }
+
+    system("cls||clear");
+    if(encontrado == -1){
+        printf("=============================\n");
+        printf("= Venda não encontrada! =\n");
+        printf("=============================\n");
+    } else {
+
+        for(int i = encontrado; i < qtd_vendas - 1; i++){
+            vendas[i] = vendas[i+1];
+        }
+        qtd_vendas--; 
+
+        printf("===================================\n");
+        printf("= Exclusão realizada com sucesso! =\n");
+        printf("===================================\n");
+    }
     Enter();
 }
 
