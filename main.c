@@ -82,6 +82,7 @@ void tela_excluir_cliente(void);
 
 // Módulo vendas
 void modulo_vendas(void);
+void tela_cadastrar_venda(void);
 
 // Módulo funcionários
 void modulo_funcionarios(void);
@@ -143,7 +144,6 @@ void tela_principal(void) {
                 break;
             case 3:
                 modulo_vendas();
-                Enter();
                 break;
             case 4:
                 modulo_funcionarios();
@@ -996,7 +996,7 @@ void modulo_vendas(void) {
 
         switch(opcao){
             case 1:
-                //tela_cadastrar_venda();
+                tela_cadastrar_venda();
                 break;
             case 2:
                 //tela_ver_vendas();
@@ -1017,6 +1017,96 @@ void modulo_vendas(void) {
                 Enter();
         }
     } while(opcao != 6);
+}
+void tela_cadastrar_venda(void){
+    system("cls||clear");
+    if(qtd_vendas >= MAX_VENDAS){
+        printf("Limite de vendas atingido!\n");
+        Enter();
+        return;
+    }
+
+    if(qtd_clientes == 0 || qtd_funcionarios == 0 || qtd_bicicletas == 0){
+        printf("É necessário ter clientes, funcionários e bicicletas cadastrados.\n");
+        Enter();
+        return;
+    }
+    
+    Venda nova;
+    char entrada[50];
+    nova.id = qtd_vendas + 1;
+
+    printf("CPF do cliente: ");
+    fgets(nova.cpf_cliente, TAM_CPF, stdin);
+    nova.cpf_cliente[strcspn(nova.cpf_cliente, "\n")] = 0;
+
+    int posicao_cliente = -1;
+    for(int i = 0; i < qtd_clientes; i++){
+        if(strcmp(clientes[i].cpf, nova.cpf_cliente) == 0){
+            posicao_cliente = i;
+            break;
+        }
+    }
+    if(posicao_cliente == -1){
+        printf("Cliente não encontrado. Cadastre o cliente primeiro.\n");
+        Enter();
+        return;
+    }
+
+    printf("CPF do funcionário: ");
+    fgets(nova.cpf_funcionario, TAM_CPF_FUNC, stdin);
+    nova.cpf_funcionario[strcspn(nova.cpf_funcionario, "\n")] = 0;
+
+    int posicao_funcionario = -1;
+    for(int i = 0; i < qtd_funcionarios; i++){
+        if(strcmp(funcionarios[i].cpf, nova.cpf_funcionario) == 0){
+            posicao_funcionario = i;
+            break;
+        }
+    }
+    if(posicao_funcionario == -1){
+        printf("Funcionário não encontrado. Cadastre o funcionário primeiro.\n");
+        Enter();
+        return;
+    }
+
+    printf("ID da bicicleta: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    nova.id_bicicleta = atoi(entrada);
+
+    int posicao_bicicleta = -1;
+    for(int i = 0; i < qtd_bicicletas; i++){
+        if(bicicletas[i].id == nova.id_bicicleta){
+            posicao_bicicleta = i;
+            break;
+        }
+    }
+    if(posicao_bicicleta == -1){
+        printf("Bicicleta não encontrada. Cadastre a bicicleta primeiro.\n");
+        Enter();
+        return;
+    }
+
+    printf("Quantidade: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    nova.quantidade = atoi(entrada);
+
+    if(bicicletas[posicao_bicicleta].estoque < nova.quantidade){
+        printf("Estoque insuficiente!\n");
+        Enter();
+        return;
+    }
+
+    bicicletas[posicao_bicicleta].estoque -= nova.quantidade;
+    nova.valor_total = bicicletas[posicao_bicicleta].preco * nova.quantidade;
+
+    vendas[qtd_vendas++] = nova;
+
+    printf("=======================================\n");
+    printf("=   Cadastro realizado com sucesso!   =\n");
+    printf("=======================================\n");
+    Enter();
+
 }
 
 int main() {
