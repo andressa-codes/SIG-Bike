@@ -85,6 +85,7 @@ void modulo_vendas(void);
 void tela_cadastrar_venda(void);
 void tela_ver_vendas(void);
 void tela_pesquisar_venda(void);
+void tela_editar_venda(void);
 
 // Módulo funcionários
 void modulo_funcionarios(void);
@@ -1007,7 +1008,7 @@ void modulo_vendas(void) {
                 tela_pesquisar_venda();
                 break;
             case 4:
-                //tela_editar_venda();
+                tela_editar_venda();
                 break;
             case 5:
                 //tela_excluir_venda();
@@ -1154,6 +1155,112 @@ void tela_pesquisar_venda(void){
             vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario, vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total
         );
     }
+    Enter();
+}
+void tela_editar_venda(void){
+    system("cls||clear");
+    if(qtd_vendas == 0){
+        printf("Nenhuma venda cadastrada.\n");
+        Enter();
+        return;
+    }
+
+    char entrada[50];
+    int id;
+    printf("Digite o ID da venda que deseja editar: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    id = atoi(entrada);
+
+    int encontrado = -1;
+    for(int i = 0; i < qtd_vendas; i++){
+        if(vendas[i].id == id){
+            encontrado = i;
+            break;
+        }
+    }
+
+    if(encontrado == -1){
+        printf("Venda com ID %d não encontrada.\n", id);
+        Enter();
+        return;
+    }
+
+    Venda *v = &vendas[encontrado];
+
+    for(int i = 0; i < qtd_bicicletas; i++){
+        if(bicicletas[i].id == v->id_bicicleta){
+            bicicletas[i].estoque += v->quantidade;
+            break;
+        }
+    }
+
+    printf("CPF do cliente: ");
+    fgets(v->cpf_cliente, TAM_CPF, stdin);
+    v->cpf_cliente[strcspn(v->cpf_cliente, "\n")] = 0;
+
+    int posicao_cliente = -1;
+    for(int i = 0; i < qtd_clientes; i++){
+        if(strcmp(clientes[i].cpf, v->cpf_cliente) == 0){
+            posicao_cliente = i;
+            break;
+        }
+    }
+    if(posicao_cliente == -1){
+        printf("Cliente não encontrado. Edição cancelada.\n");
+        Enter();
+        return;
+    }
+
+    printf("CPF do funcionário: ");
+    fgets(v->cpf_funcionario, TAM_CPF_FUNC, stdin);
+    v->cpf_funcionario[strcspn(v->cpf_funcionario, "\n")] = 0;
+
+    int posicao_funcionario = -1;
+    for(int i = 0; i < qtd_funcionarios; i++){
+        if(strcmp(funcionarios[i].cpf, v->cpf_funcionario) == 0){
+            posicao_funcionario = i;
+            break;
+        }
+    }
+    if(posicao_funcionario == -1){
+        printf("Funcionário não encontrado. Edição cancelada.\n");
+        Enter();
+        return;
+    }
+
+    printf("ID da bicicleta: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    v->id_bicicleta = atoi(entrada);
+
+    int posicao_bicicleta = -1;
+    for(int i = 0; i < qtd_bicicletas; i++){
+        if(bicicletas[i].id == v->id_bicicleta){
+            posicao_bicicleta = i;
+            break;
+        }
+    }
+    if(posicao_bicicleta == -1){
+        printf("Bicicleta não encontrada. Edição cancelada.\n");
+        Enter();
+        return;
+    }
+
+    printf("Quantidade: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    v->quantidade = atoi(entrada);
+
+    if(bicicletas[posicao_bicicleta].estoque < v->quantidade){
+        printf("Estoque insuficiente! Edição cancelada.\n");
+        Enter();
+        return;
+    }
+
+    bicicletas[posicao_bicicleta].estoque -= v->quantidade;
+    v->valor_total = bicicletas[posicao_bicicleta].preco * v->quantidade;
+
+    printf("=======================================\n");
+    printf("=    Edição realizada com sucesso!    =\n");
+    printf("=======================================\n");
     Enter();
 }
 
