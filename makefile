@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -g -Iinclude
 
 # Arquivos fonte dentro de src/
-SRCS = src/main.c src/tela_inicial.c src/tela_principal.c src/modulos_info.c
+SRCS = src/main.c src/tela_inicial.c src/tela_principal.c src/modulos_info.c src/bicicletas.c
 
 # Arquivos objeto
 OBJS = $(SRCS:.c=.o)
