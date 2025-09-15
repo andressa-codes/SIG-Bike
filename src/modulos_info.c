@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/tela_inicial.h"
+#include "../include/modulos_info.h"
 
 void tela_sobre(){
     system("cls||clear");

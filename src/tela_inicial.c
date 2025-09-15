@@ -29,8 +29,8 @@ void tela_inicial(void){
         printf("///////////////////////////////////////////////////////////////////////////////\n");
         printf("///                                                                         ///\n");
         printf("///            1 - Entrar no sistema                                        ///\n");
-        printf("///            2 - Equipe de desenvolvimento                                ///\n");
-        printf("///            3 - Sobre o sistema                                          ///\n");
+        printf("///            2 - Sobre o sistema                                          ///\n");
+        printf("///            3 - Equipe de desenvolvimento                                ///\n");
         printf("///            4 - Sair                                                     ///\n");
         printf("///                                                                         ///\n");
         printf("///            Escolha a opção desejada:                                    ///\n");
