@@ -1,6 +1,10 @@
 #ifndef VENDAS_H
 #define VENDAS_H
 
+#include "clientes.h"
+#include "funcionarios.h"
+#include "bicicletas.h"
+
 #define MAX_VENDAS 500
 
 typedef struct {                 
