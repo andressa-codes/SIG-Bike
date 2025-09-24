@@ -2,13 +2,20 @@
 CC = gcc
 
 # Flags do compilador
-CFLAGS = -Wall -Wextra -g -Iinclude
+CFLAGS = -Wall -Wextra -g -Iinclude -MMD -MP
 
-# Arquivos fonte dentro de src/
-SRCS = src/main.c src/tela_inicial.c src/tela_principal.c src/modulos_info.c src/bicicletas.c src/clientes.c src/funcionarios.c src/vendas.c
+# Pastas
+SRC_DIR = src
+OBJ_DIR = obj
+
+# Arquivos fonte
+SRCS = $(wildcard $(SRC_DIR)/*.c)
 
 # Arquivos objeto
-OBJS = $(SRCS:.c=.o)
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+
+# Arquivos de dependência
+DEPS = $(OBJS:.o=.d)
 
 # Nome do executável
 TARGET = sigbike
@@ -18,16 +25,23 @@ all: $(TARGET)
 
 # Como gerar o executável
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
 
-# Como compilar cada .c em .o
-src/%.o: src/%.c
+# Compilar cada .c em .o
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Criar pasta de objetos se não existir
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+# Incluir dependências
+-include $(DEPS)
 
 # Limpar arquivos compilados
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(OBJ_DIR) $(TARGET)
 
 # Compilar e executar
-run: $(TARGET)
+run: all
 	./$(TARGET)
