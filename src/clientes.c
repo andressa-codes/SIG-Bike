@@ -68,6 +68,7 @@ void modulo_clientes(void) {
 }
 
 void tela_cadastrar_cliente(void){
+    FILE *arq_clientes;
     system("cls||clear");
     if(qtd_clientes >= MAX_CLIENTES){
         printf("Limite de clientes atingido!\n");
@@ -95,145 +96,206 @@ void tela_cadastrar_cliente(void){
 
     clientes[qtd_clientes++] = novo;
 
+    arq_clientes = fopen("dados_clientes/clientes.csv", "a");
+    if(arq_clientes == NULL){
+        printf("Erro ao abrir o arquivo de clientes.\n");
+        return;
+    }
+
+    fprintf(arq_clientes, "%s;", novo.nome);
+    fprintf(arq_clientes, "%s;", novo.email);
+    fprintf(arq_clientes, "%s;", novo.cidade);
+    fprintf(arq_clientes, "%s\n", novo.cpf);
+    fclose(arq_clientes);
+
     printf("===================================\n");
     printf("= Cadastro realizado com sucesso! =\n");
     printf("===================================\n");
     Enter();
 }
 
+void carregar_cliente_por_cpf(char cpfBuscado[]) {
+    FILE *arq;
+    char nome[TAM_NOME];
+    char email[TAM_EMAIL];
+    char cidade[TAM_CIDADE];
+    char cpf[TAM_CPF];
+
+    arq = fopen("dados_clientes/clientes.csv", "rt");
+    if (arq == NULL) {
+        printf("Erro: não foi possível abrir o arquivo de clientes.\n");
+        getchar();
+        return;
+    }
+
+    while (fscanf(arq, "%[^;];%[^;];%[^;];%[^\n]\n", nome, email, cidade, cpf) == 4) {
+        if (strcmp(cpf, cpfBuscado) == 0) {
+            printf("\n=== Cliente encontrado ===\n");
+            printf("Nome: %s\n", nome);
+            printf("Email: %s\n", email);
+            printf("Cidade: %s\n", cidade);
+            printf("CPF: %s\n", cpf);
+            fclose(arq);
+            return;
+        }
+    }
+
+    printf("\nCliente com CPF %s não encontrado.\n", cpfBuscado);
+    fclose(arq);
+}
+
 void tela_ver_clientes(void){
     system("cls||clear");
     printf("\n=== Clientes Cadastrados ===\n");
-    if(qtd_clientes == 0){
-        printf("Nenhum cliente cadastrado.\n");
-    } else {
-        for(int i = 0; i < qtd_clientes; i++){
-            printf("%d. Nome: %s | Email: %s | Cidade: %s | CPF: %s\n",
-                i+1, clientes[i].nome, clientes[i].email, clientes[i].cidade, clientes[i].cpf);
-        }
-    }
-    Enter();
-}
 
-void tela_pesquisar_cliente(void){
-    system("cls||clear");
-
-    if(qtd_clientes == 0){
-        printf("Nenhum cliente cadastrado.\n");
+    FILE *arq = fopen("dados_clientes/clientes.csv", "rt");
+    if (arq == NULL) {
+        printf("Nenhum cliente cadastrado (arquivo vazio ou não encontrado).\n");
         Enter();
         return;
     }
+
+    char nome[TAM_NOME], email[TAM_EMAIL], cidade[TAM_CIDADE], cpf[TAM_CPF];
+    int count = 0;
+
+    while (fscanf(arq, "%[^;];%[^;];%[^;];%[^\n]\n", nome, email, cidade, cpf) == 4) {
+        printf("%d. Nome: %s | Email: %s | Cidade: %s | CPF: %s\n",
+               ++count, nome, email, cidade, cpf);
+    }
+
+    if (count == 0) {
+        printf("Nenhum cliente cadastrado.\n");
+    }
+
+    fclose(arq);
+    Enter();
+}
+
+void tela_pesquisar_cliente(void) {
+    system("cls||clear");
 
     char cpf[TAM_CPF];
     printf("Digite o CPF do cliente que deseja visualizar: ");
     fgets(cpf, TAM_CPF, stdin);
-    cpf[strcspn(cpf, "\n")] = 0;   
+    cpf[strcspn(cpf, "\n")] = 0;
 
-    int encontrado = -1;
-    for(int i = 0; i < qtd_clientes; i++){
-        if(strcmp(clientes[i].cpf, cpf) == 0){
-            encontrado = i;
-            break;
-        }
-    }
-
-    if(encontrado == -1){
-        printf("\nCliente com CPF %s não encontrado.\n", cpf);
-    } else {
-        int i = encontrado;
-        printf("Nome: %s | cidade: %s | Email: %s | CPF: %s \n",
-            clientes[i].nome, clientes[i].cidade, clientes[i].email, clientes[i].cpf
-        );
-    }
+    carregar_cliente_por_cpf(cpf); // <-- busca direto no CSV
     Enter();
 }
 
-void tela_editar_cliente(void){
+void tela_editar_cliente(void) {
     system("cls||clear");
-
-    if(qtd_clientes == 0){
-        printf("Nenhum cliente cadastrado.\n");
-        Enter();
-        return;
-    }
 
     char cpf[TAM_CPF];
     printf("Digite o CPF do cliente que deseja editar: ");
     fgets(cpf, TAM_CPF, stdin);
-    cpf[strcspn(cpf, "\n")] = 0; 
+    cpf[strcspn(cpf, "\n")] = 0;
 
-    int encontrado = -1;
-    for(int i = 0; i < qtd_clientes; i++){
-        if(strcmp(clientes[i].cpf, cpf) == 0){
-            encontrado = i;
-            break;
+    FILE *arq = fopen("dados_clientes/clientes.csv", "rt");
+    if (!arq) {
+        printf("Erro ao abrir arquivo de clientes.\n");
+        Enter();
+        return;
+    }
+
+    FILE *temp = fopen("dados_clientes/temp.csv", "wt");
+    if (!temp) {
+        fclose(arq);
+        printf("Erro ao criar arquivo temporário.\n");
+        Enter();
+        return;
+    }
+
+    char nome[TAM_NOME], email[TAM_EMAIL], cidade[TAM_CIDADE], cpfArq[TAM_CPF];
+    int encontrado = 0;
+
+    while (fscanf(arq, "%[^;];%[^;];%[^;];%[^\n]\n", nome, email, cidade, cpfArq) == 4) {
+        if (strcmp(cpfArq, cpf) == 0) {
+            encontrado = 1;
+            Cliente editado;
+
+            printf("Novo Nome: ");
+            fgets(editado.nome, TAM_NOME, stdin);
+            editado.nome[strcspn(editado.nome, "\n")] = 0;
+
+            printf("Novo Email: ");
+            fgets(editado.email, TAM_EMAIL, stdin);
+            editado.email[strcspn(editado.email, "\n")] = 0;
+
+            printf("Nova Cidade: ");
+            fgets(editado.cidade, TAM_CIDADE, stdin);
+            editado.cidade[strcspn(editado.cidade, "\n")] = 0;
+
+            strcpy(editado.cpf, cpfArq); // mantém o CPF original
+
+            fprintf(temp, "%s;%s;%s;%s\n", editado.nome, editado.email, editado.cidade, editado.cpf);
+        } else {
+            fprintf(temp, "%s;%s;%s;%s\n", nome, email, cidade, cpfArq);
         }
     }
 
-    if(encontrado == -1){
+    fclose(arq);
+    fclose(temp);
+    remove("dados_clientes/clientes.csv");
+    rename("dados_clientes/temp.csv", "dados_clientes/clientes.csv");
+
+    if (encontrado) {
+        printf("=======================================\n");
+        printf("=    Edição realizada com sucesso!    =\n");
+        printf("=======================================\n");
+    } else {
         printf("\nCliente com CPF %s não encontrado.\n", cpf);
-        Enter();
-        return;
     }
-
-    Cliente *c = &clientes[encontrado];
-
-    printf("Nome: ");
-    fgets(c->nome, TAM_NOME, stdin);
-    c->nome[strcspn(c->nome, "\n")] = 0;
-
-    printf("Email: ");
-    fgets(c->email, TAM_EMAIL, stdin);
-    c->email[strcspn(c->email, "\n")] = 0;
-
-    printf("Cidade: ");
-    fgets(c->cidade, TAM_CIDADE, stdin);
-    c->cidade[strcspn(c->cidade, "\n")] = 0;
-
-    printf("CPF (apenas números): ");
-    fgets(c->cpf, TAM_CPF, stdin);
-    c->cpf[strcspn(c->cpf, "\n")] = 0;
-
-    printf("=======================================\n");
-    printf("=    Edição realizada com sucesso!    =\n");
-    printf("=======================================\n");
     Enter();
 }
 
-void tela_excluir_cliente(void){
+void tela_excluir_cliente(void) {
     system("cls||clear");
-    if(qtd_clientes == 0){
-        printf("Nenhum cliente para excluir.\n");
-        Enter();
-        return;
-    }
 
     char cpf[TAM_CPF];
     printf("Digite o CPF do cliente para excluir: ");
     fgets(cpf, TAM_CPF, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    int encontrado = -1;
-    for(int i = 0; i < qtd_clientes; i++){
-        if(strcmp(clientes[i].cpf, cpf) == 0){
-            encontrado = i;
-            break;
+    FILE *arq = fopen("dados_clientes/clientes.csv", "rt");
+    if (!arq) {
+        printf("Erro ao abrir arquivo de clientes.\n");
+        Enter();
+        return;
+    }
+
+    FILE *temp = fopen("dados_clientes/temp.csv", "wt");
+    if (!temp) {
+        fclose(arq);
+        printf("Erro ao criar arquivo temporário.\n");
+        Enter();
+        return;
+    }
+
+    char nome[TAM_NOME], email[TAM_EMAIL], cidade[TAM_CIDADE], cpfArq[TAM_CPF];
+    int encontrado = 0;
+
+    while (fscanf(arq, "%[^;];%[^;];%[^;];%[^\n]\n", nome, email, cidade, cpfArq) == 4) {
+        if (strcmp(cpfArq, cpf) != 0) {
+            fprintf(temp, "%s;%s;%s;%s\n", nome, email, cidade, cpfArq);
+        } else {
+            encontrado = 1;
         }
     }
 
-    system("cls||clear");
-    if(encontrado == -1){
-        printf("===========================\n");
-        printf("= Cliente não encontrado! =\n");
-        printf("===========================\n");
-    } else {
-        for(int i = encontrado; i < qtd_clientes - 1; i++){
-            clientes[i] = clientes[i+1];
-        }
-        qtd_clientes--;
+    fclose(arq);
+    fclose(temp);
+    remove("dados_clientes/clientes.csv");
+    rename("dados_clientes/temp.csv", "dados_clientes/clientes.csv");
+
+    if (encontrado) {
         printf("===================================\n");
         printf("= Exclusão realizada com sucesso! =\n");
         printf("===================================\n");
+    } else {
+        printf("===========================\n");
+        printf("= Cliente não encontrado! =\n");
+        printf("===========================\n");
     }
     Enter();
 }
