@@ -1,16 +1,127 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/tela_inicial.h"
-#include "../include/bicicletas.h"
-#include "../include/clientes.h"
-#include "../include/funcionarios.h"
 #include "../include/vendas.h"
+#include "../include/tela_inicial.h"
+
+#define MAX_VENDAS 500
 
 Venda vendas[MAX_VENDAS];
 int qtd_vendas = 0;
 
-void modulo_vendas(void) {
+// === Funções auxiliares para CSV ===
+
+int cliente_existe(const char *cpf) {
+    FILE *arq = fopen("dados_clientes/clientes.csv", "rt");
+    if (!arq) return 0;
+
+    char nome[100], email[100], cidade[100], cpf_lido[TAM_CPF];
+    while (fscanf(arq, "%99[^;];%99[^;];%99[^;];%14[^\n]\n", nome, email, cidade, cpf_lido) == 4) {
+        if (strcmp(cpf, cpf_lido) == 0) {
+            fclose(arq);
+            return 1;
+        }
+    }
+
+    fclose(arq);
+    return 0;
+}
+
+int funcionario_existe(const char *cpf) {
+    FILE *arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    if (!arq) return 0;
+
+    char nome[100], email[100], cargo[50], cpf_lido[TAM_CPF_FUNC];
+    while (fscanf(arq, "%99[^;];%99[^;];%49[^;];%14[^\n]\n", nome, email, cargo, cpf_lido) == 4) {
+        if (strcmp(cpf, cpf_lido) == 0) {
+            fclose(arq);
+            return 1;
+        }
+    }
+
+    fclose(arq);
+    return 0;
+}
+
+int bicicleta_existe(int id, float *preco, int *estoque) {
+    FILE *arq = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    if (!arq) return 0;
+
+    char marca[50], modelo[50];
+    int id_lido, estoque_lido;
+    float preco_lido;
+
+    while (fscanf(arq, "%d;%49[^;];%49[^;];%f;%d\n", &id_lido, marca, modelo, &preco_lido, &estoque_lido) == 5) {
+        if (id_lido == id) {
+            *preco = preco_lido;
+            *estoque = estoque_lido;
+            fclose(arq);
+            return 1;
+        }
+    }
+
+    fclose(arq);
+    return 0;
+}
+
+void atualizar_estoque_bicicleta(int id, int novo_estoque) {
+    FILE *arq = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    FILE *temp = fopen("dados_bicicletas/temp.csv", "wt");
+    if (!arq || !temp) { if(arq) fclose(arq); return; }
+
+    char marca[50], modelo[50];
+    int id_lido, estoque_lido;
+    float preco_lido;
+
+    while (fscanf(arq, "%d;%49[^;];%49[^;];%f;%d\n", &id_lido, marca, modelo, &preco_lido, &estoque_lido) == 5) {
+        if (id_lido == id) estoque_lido = novo_estoque;
+        fprintf(temp, "%d;%s;%s;%.2f;%d\n", id_lido, marca, modelo, preco_lido, estoque_lido);
+    }
+
+    fclose(arq);
+    fclose(temp);
+    remove("dados_bicicletas/bicicletas.csv");
+    rename("dados_bicicletas/temp.csv", "dados_bicicletas/bicicletas.csv");
+}
+
+// === Funções de persistência de vendas ===
+
+void salvar_vendas_csv() {
+    FILE *arq = fopen("dados_vendas/vendas.csv", "wt");
+    if (!arq) return;
+
+    for (int i = 0; i < qtd_vendas; i++) {
+        fprintf(arq, "%d;%s;%s;%d;%d;%.2f\n",
+                vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario,
+                vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total);
+    }
+
+    fclose(arq);
+}
+
+void carregar_vendas_csv() {
+    FILE *arq = fopen("dados_vendas/vendas.csv", "rt");
+    if (!arq) return;
+
+    qtd_vendas = 0;
+    while (fscanf(arq, "%d;%14[^;];%14[^;];%d;%d;%f\n",
+                  &vendas[qtd_vendas].id,
+                  vendas[qtd_vendas].cpf_cliente,
+                  vendas[qtd_vendas].cpf_funcionario,
+                  &vendas[qtd_vendas].id_bicicleta,
+                  &vendas[qtd_vendas].quantidade,
+                  &vendas[qtd_vendas].valor_total) == 6) {
+        qtd_vendas++;
+        if (qtd_vendas >= MAX_VENDAS) break;
+    }
+
+    fclose(arq);
+}
+
+// === Funções principais do módulo de vendas ===
+
+void modulo_vendas() {
+    carregar_vendas_csv();
     int opcao;
 
     do {
@@ -39,317 +150,144 @@ void modulo_vendas(void) {
         printf("///            Escolha a opção desejada:                                    ///\n");
         printf("///                                                                         ///\n");
         printf("///////////////////////////////////////////////////////////////////////////////\n");
-        if(scanf("%d", &opcao) != 1){
-            while(getchar() != '\n');
-            opcao = 0;
-        }
-        while(getchar() != '\n');
+        if (scanf("%d", &opcao) != 1) { while(getchar()!='\n'); opcao = 0; }
+        while(getchar()!='\n');
 
-        switch(opcao){
-            case 1:
-                tela_cadastrar_venda();
-                break;
-            case 2:
-                tela_ver_vendas();
-                break;
-            case 3:
-                tela_pesquisar_venda();
-                break;
-            case 4:
-                tela_editar_venda();
-                break;
-            case 5:
-                tela_excluir_venda();
-                break;
-            case 6:
-                return;
-            default:
-                printf("Opção inválida!\n");
-                Enter();
+        switch(opcao) {
+            case 1: tela_cadastrar_venda(); break;
+            case 2: tela_ver_vendas(); break;
+            case 3: tela_pesquisar_venda(); break;
+            case 4: tela_editar_venda(); break;
+            case 5: tela_excluir_venda(); break;
+            case 6: return;
+            default: printf("Opção inválida!\n"); Enter();
         }
     } while(opcao != 6);
 }
-void tela_cadastrar_venda(void){
-    system("cls||clear");
-    if(qtd_vendas >= MAX_VENDAS){
-        printf("Limite de vendas atingido!\n");
-        Enter();
-        return;
-    }
 
-    if(qtd_clientes == 0 || qtd_funcionarios == 0 || qtd_bicicletas == 0){
-        printf("É necessário ter clientes, funcionários e bicicletas cadastrados.\n");
-        Enter();
-        return;
-    }
-    
+// === CRUD de vendas ===
+
+void tela_cadastrar_venda() {
+    if (qtd_vendas >= MAX_VENDAS) { printf("Limite de vendas atingido!\n"); Enter(); return; }
+
     Venda nova;
     char entrada[50];
     nova.id = qtd_vendas + 1;
 
-    printf("CPF do cliente: ");
-    fgets(nova.cpf_cliente, TAM_CPF, stdin);
+    printf("CPF do cliente: "); fgets(nova.cpf_cliente, TAM_CPF, stdin);
     nova.cpf_cliente[strcspn(nova.cpf_cliente, "\n")] = 0;
+    if (!cliente_existe(nova.cpf_cliente)) { printf("Cliente não encontrado!\n"); Enter(); return; }
 
-    int posicao_cliente = -1;
-    for(int i = 0; i < qtd_clientes; i++){
-        if(strcmp(clientes[i].cpf, nova.cpf_cliente) == 0){
-            posicao_cliente = i;
-            break;
-        }
-    }
-    if(posicao_cliente == -1){
-        printf("Cliente não encontrado. Cadastre o cliente primeiro.\n");
-        Enter();
-        return;
-    }
-
-    printf("CPF do funcionário: ");
-    fgets(nova.cpf_funcionario, TAM_CPF_FUNC, stdin);
+    printf("CPF do funcionário: "); fgets(nova.cpf_funcionario, TAM_CPF_FUNC, stdin);
     nova.cpf_funcionario[strcspn(nova.cpf_funcionario, "\n")] = 0;
+    if (!funcionario_existe(nova.cpf_funcionario)) { printf("Funcionário não encontrado!\n"); Enter(); return; }
 
-    int posicao_funcionario = -1;
-    for(int i = 0; i < qtd_funcionarios; i++){
-        if(strcmp(funcionarios[i].cpf, nova.cpf_funcionario) == 0){
-            posicao_funcionario = i;
-            break;
-        }
-    }
-    if(posicao_funcionario == -1){
-        printf("Funcionário não encontrado. Cadastre o funcionário primeiro.\n");
-        Enter();
-        return;
-    }
-
-    printf("ID da bicicleta: ");
-    fgets(entrada, sizeof(entrada), stdin);
+    printf("ID da bicicleta: "); fgets(entrada, sizeof(entrada), stdin);
     nova.id_bicicleta = atoi(entrada);
+    float preco; int estoque;
+    if (!bicicleta_existe(nova.id_bicicleta, &preco, &estoque)) { printf("Bicicleta não encontrada!\n"); Enter(); return; }
 
-    int posicao_bicicleta = -1;
-    for(int i = 0; i < qtd_bicicletas; i++){
-        if(bicicletas[i].id == nova.id_bicicleta){
-            posicao_bicicleta = i;
-            break;
-        }
-    }
-    if(posicao_bicicleta == -1){
-        printf("Bicicleta não encontrada. Cadastre a bicicleta primeiro.\n");
-        Enter();
-        return;
-    }
-
-    printf("Quantidade: ");
-    fgets(entrada, sizeof(entrada), stdin);
+    printf("Quantidade: "); fgets(entrada, sizeof(entrada), stdin);
     nova.quantidade = atoi(entrada);
+    if (nova.quantidade > estoque) { printf("Estoque insuficiente!\n"); Enter(); return; }
 
-    if(bicicletas[posicao_bicicleta].estoque < nova.quantidade){
-        printf("Estoque insuficiente!\n");
-        Enter();
-        return;
-    }
-
-    bicicletas[posicao_bicicleta].estoque -= nova.quantidade;
-    nova.valor_total = bicicletas[posicao_bicicleta].preco * nova.quantidade;
+    estoque -= nova.quantidade;
+    atualizar_estoque_bicicleta(nova.id_bicicleta, estoque);
+    nova.valor_total = preco * nova.quantidade;
 
     vendas[qtd_vendas++] = nova;
-
+    salvar_vendas_csv();
     printf("=======================================\n");
-    printf("=   Cadastro realizado com sucesso!   =\n");
-    printf("=======================================\n");
-    Enter();
-}
-void tela_ver_vendas(void){
-    system("cls||clear");
-    printf("\n=== Vendas cadastradas ===\n");
-    if(qtd_vendas == 0){
-        printf("Nenhum venda cadastrada.\n");
-    } else {
-        for(int i = 0; i < qtd_vendas; i++){
-            printf("%d. CPF do cliente: %s | CPF do funcionário: %s | ID da bicicleta: %d | Quantidade comprada: %d | Valor total da compra: %.2f R$\n",
-                vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario, vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total);
-        }
-    }
-    Enter();
-}
-void tela_pesquisar_venda(void){
-    system("cls||clear");
-    
-    if(qtd_vendas == 0){
-        printf("Nenhuma venda cadastrada.\n");
-        Enter();
-        return;
-    }
-
-    int id;
-    char entrada[50];
-
-    printf("Digite o ID da venda que deseja visualizar: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    id = atoi(entrada);
-
-    int encontrado = -1;
-    for(int i = 0; i < qtd_vendas; i++){
-        if(vendas[i].id == id){
-            encontrado = i;
-            break;
-        }
-    }
-
-    if(encontrado == -1){
-        printf("\nVenda com ID %d não encontrada.\n", id);
-    } else {
-        int i = encontrado;
-        printf("%d. CPF do cliente: %s | CPF do funcionário: %s | ID da bicicleta: %d | Quantidade comprada: %d | Valor total da compra: R$ %.2f\n",
-            vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario, vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total
-        );
-    }
-    Enter();
-}
-void tela_editar_venda(void){
-    system("cls||clear");
-    if(qtd_vendas == 0){
-        printf("Nenhuma venda cadastrada.\n");
-        Enter();
-        return;
-    }
-
-    char entrada[50];
-    int id;
-    printf("Digite o ID da venda que deseja editar: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    id = atoi(entrada);
-
-    int encontrado = -1;
-    for(int i = 0; i < qtd_vendas; i++){
-        if(vendas[i].id == id){
-            encontrado = i;
-            break;
-        }
-    }
-
-    if(encontrado == -1){
-        printf("Venda com ID %d não encontrada.\n", id);
-        Enter();
-        return;
-    }
-
-    Venda *v = &vendas[encontrado];
-
-    for(int i = 0; i < qtd_bicicletas; i++){
-        if(bicicletas[i].id == v->id_bicicleta){
-            bicicletas[i].estoque += v->quantidade;
-            break;
-        }
-    }
-
-    printf("CPF do cliente: ");
-    fgets(v->cpf_cliente, TAM_CPF, stdin);
-    v->cpf_cliente[strcspn(v->cpf_cliente, "\n")] = 0;
-
-    int posicao_cliente = -1;
-    for(int i = 0; i < qtd_clientes; i++){
-        if(strcmp(clientes[i].cpf, v->cpf_cliente) == 0){
-            posicao_cliente = i;
-            break;
-        }
-    }
-    if(posicao_cliente == -1){
-        printf("Cliente não encontrado. Edição cancelada.\n");
-        Enter();
-        return;
-    }
-
-    printf("CPF do funcionário: ");
-    fgets(v->cpf_funcionario, TAM_CPF_FUNC, stdin);
-    v->cpf_funcionario[strcspn(v->cpf_funcionario, "\n")] = 0;
-
-    int posicao_funcionario = -1;
-    for(int i = 0; i < qtd_funcionarios; i++){
-        if(strcmp(funcionarios[i].cpf, v->cpf_funcionario) == 0){
-            posicao_funcionario = i;
-            break;
-        }
-    }
-    if(posicao_funcionario == -1){
-        printf("Funcionário não encontrado. Edição cancelada.\n");
-        Enter();
-        return;
-    }
-
-    printf("ID da bicicleta: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    v->id_bicicleta = atoi(entrada);
-
-    int posicao_bicicleta = -1;
-    for(int i = 0; i < qtd_bicicletas; i++){
-        if(bicicletas[i].id == v->id_bicicleta){
-            posicao_bicicleta = i;
-            break;
-        }
-    }
-    if(posicao_bicicleta == -1){
-        printf("Bicicleta não encontrada. Edição cancelada.\n");
-        Enter();
-        return;
-    }
-
-    printf("Quantidade: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    v->quantidade = atoi(entrada);
-
-    if(bicicletas[posicao_bicicleta].estoque < v->quantidade){
-        printf("Estoque insuficiente! Edição cancelada.\n");
-        Enter();
-        return;
-    }
-
-    bicicletas[posicao_bicicleta].estoque -= v->quantidade;
-    v->valor_total = bicicletas[posicao_bicicleta].preco * v->quantidade;
-
-    printf("=======================================\n");
-    printf("=    Edição realizada com sucesso!    =\n");
+    printf("=     Venda realizada com sucesso!    =\n");
     printf("=======================================\n");
     Enter();
 }
 
-void tela_excluir_venda(void){
-    system("cls||clear");
-
-    if(qtd_vendas == 0){
-        printf("Nenhuma venda cadastrada para excluir.\n");
-        Enter();
-        return;
-    }
-
-    char entrada[50];
-    int id;
-    printf("Digite o ID da venda para excluir: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    id = atoi(entrada);
-
-    int encontrado = -1;
-    for(int i = 0; i < qtd_vendas; i++){
-        if(vendas[i].id == id){
-            encontrado = i;
-            break;
-        }
-    }
-
-    system("cls||clear");
-    if(encontrado == -1){
-        printf("=============================\n");
-        printf("= Venda não encontrada! =\n");
-        printf("=============================\n");
-    } else {
-
-        for(int i = encontrado; i < qtd_vendas - 1; i++){
-            vendas[i] = vendas[i+1];
-        }
-        qtd_vendas--; 
-
-        printf("===================================\n");
-        printf("= Exclusão realizada com sucesso! =\n");
-        printf("===================================\n");
-    }
+void tela_ver_vendas() {
+    if (qtd_vendas == 0) { printf("Nenhuma venda cadastrada.\n"); Enter(); return; }
+    for (int i = 0; i < qtd_vendas; i++)
+        printf("%d. Cliente: %s | Funcionário: %s | Bicicleta: %d | Qtde: %d | Total: %.2f\n",
+               vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario,
+               vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total);
     Enter();
+}
+
+void tela_pesquisar_venda() {
+    if (qtd_vendas == 0) { printf("Nenhuma venda cadastrada.\n"); Enter(); return; }
+
+    char entrada[50]; int id;
+    printf("ID da venda: "); fgets(entrada, sizeof(entrada), stdin); id = atoi(entrada);
+
+    for (int i = 0; i < qtd_vendas; i++) {
+        if (vendas[i].id == id) {
+            printf("%d. Cliente: %s | Funcionário: %s | Bicicleta: %d | Qtde: %d | Total: %.2f\n",
+                   vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario,
+                   vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total);
+            Enter(); return;
+        }
+    }
+    printf("Venda não encontrada.\n"); Enter();
+}
+
+void tela_editar_venda() {
+    if (qtd_vendas == 0) { printf("Nenhuma venda cadastrada.\n"); Enter(); return; }
+
+    char entrada[50]; int id;
+    printf("ID da venda: "); fgets(entrada, sizeof(entrada), stdin); id = atoi(entrada);
+
+    for (int i = 0; i < qtd_vendas; i++) {
+        Venda *v = &vendas[i];
+        if (v->id == id) {
+            float preco; int estoque;
+            if (bicicleta_existe(v->id_bicicleta, &preco, &estoque)) {
+                estoque += v->quantidade;
+                atualizar_estoque_bicicleta(v->id_bicicleta, estoque);
+            }
+
+            printf("CPF cliente: "); fgets(v->cpf_cliente, TAM_CPF, stdin);
+            v->cpf_cliente[strcspn(v->cpf_cliente,"\n")]=0;
+            if (!cliente_existe(v->cpf_cliente)) { printf("Cliente não encontrado!\n"); Enter(); return; }
+
+            printf("CPF funcionário: "); fgets(v->cpf_funcionario, TAM_CPF_FUNC, stdin);
+            v->cpf_funcionario[strcspn(v->cpf_funcionario,"\n")]=0;
+            if (!funcionario_existe(v->cpf_funcionario)) { printf("Funcionário não encontrado!\n"); Enter(); return; }
+
+            printf("ID bicicleta: "); fgets(entrada, sizeof(entrada), stdin); v->id_bicicleta=atoi(entrada);
+            if (!bicicleta_existe(v->id_bicicleta, &preco, &estoque)) { printf("Bicicleta não encontrada!\n"); Enter(); return; }
+
+            printf("Quantidade: "); fgets(entrada, sizeof(entrada), stdin); v->quantidade=atoi(entrada);
+            if (v->quantidade > estoque) { printf("Estoque insuficiente!\n"); Enter(); return; }
+
+            estoque -= v->quantidade; atualizar_estoque_bicicleta(v->id_bicicleta, estoque);
+            v->valor_total = preco * v->quantidade;
+            salvar_vendas_csv();
+            printf("Venda editada com sucesso!\n"); Enter();
+            return;
+        }
+    }
+    printf("Venda não encontrada.\n"); Enter();
+}
+
+void tela_excluir_venda() {
+    if (qtd_vendas == 0) { printf("Nenhuma venda cadastrada.\n"); Enter(); return; }
+
+    char entrada[50]; int id;
+    printf("ID da venda: "); fgets(entrada, sizeof(entrada), stdin); id = atoi(entrada);
+
+    for (int i = 0; i < qtd_vendas; i++) {
+        if (vendas[i].id == id) {
+            float preco; int estoque;
+            if (bicicleta_existe(vendas[i].id_bicicleta, &preco, &estoque)) {
+                estoque += vendas[i].quantidade;
+                atualizar_estoque_bicicleta(vendas[i].id_bicicleta, estoque);
+            }
+
+            for (int j = i; j < qtd_vendas-1; j++) vendas[j] = vendas[j+1];
+            qtd_vendas--;
+            salvar_vendas_csv();
+            printf("Venda excluída com sucesso!\n"); Enter();
+            return;
+        }
+    }
+    printf("Venda não encontrada.\n"); Enter();
 }
