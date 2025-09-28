@@ -4,11 +4,10 @@
 #include "../include/tela_inicial.h"
 #include "../include/funcionarios.h"
 
-Funcionario funcionarios[MAX_FUNCIONARIOS];
-int qtd_funcionarios = 0;
 
 void modulo_funcionarios(void) {
     int opcao;
+
     do {
         system("cls||clear");
         printf("///////////////////////////////////////////////////////////////////////////////\n");
@@ -33,8 +32,8 @@ void modulo_funcionarios(void) {
         printf("///                                                                         ///\n");
         printf("///            Escolha a opção desejada:                                    ///\n");
         printf("///                                                                         ///\n");
-        printf("///////////////////////////////////////////////////////////////////////////////\n");
-        printf("\n");
+        printf("/////////////////////////////////////////////////////////////////////////////\n\n");
+
         if(scanf("%d", &opcao) != 1){
             while(getchar() != '\n');
             opcao = 0;
@@ -48,18 +47,16 @@ void modulo_funcionarios(void) {
             case 4: tela_editar_funcionario(); break;
             case 5: tela_excluir_funcionario(); break;
             case 6: return;
-            default: printf("Opção inválida!\n"); Enter();
+            default:
+                printf("Opção inválida!\n");
+                Enter();
         }
     } while(opcao != 6);
 }
 
-void tela_cadastrar_funcionario(void) {
+void tela_cadastrar_funcionario(void){
+    FILE *arq_funcionarios;
     system("cls||clear");
-    if(qtd_funcionarios >= MAX_FUNCIONARIOS){
-        printf("Limite de funcionários atingido!\n");
-        Enter();
-        return;
-    }
 
     Funcionario novo;
 
@@ -72,14 +69,21 @@ void tela_cadastrar_funcionario(void) {
     novo.email[strcspn(novo.email, "\n")] = 0;
 
     printf("Cargo: ");
-    fgets(novo.cargo, TAM_CARGO, stdin);
+    fgets(novo.cargo, TAM_CARGO_FUNC, stdin);
     novo.cargo[strcspn(novo.cargo, "\n")] = 0;
 
     printf("CPF (apenas números): ");
     fgets(novo.cpf, TAM_CPF_FUNC, stdin);
     novo.cpf[strcspn(novo.cpf, "\n")] = 0;
 
-    funcionarios[qtd_funcionarios++] = novo;
+    arq_funcionarios = fopen("dados_funcionarios/funcionarios.csv", "a");
+    if(arq_funcionarios == NULL){
+        printf("Erro ao abrir o arquivo de funcionários.\n");
+        return;
+    }
+
+    fprintf(arq_funcionarios, "%s;%s;%s;%s\n", novo.nome, novo.email, novo.cargo, novo.cpf);
+    fclose(arq_funcionarios);
 
     printf("===================================\n");
     printf("= Cadastro realizado com sucesso! =\n");
@@ -87,139 +91,169 @@ void tela_cadastrar_funcionario(void) {
     Enter();
 }
 
-void tela_ver_funcionarios(void) {
-    system("cls||clear");
-    printf("\n=== Funcionários Cadastrados ===\n");
-    if(qtd_funcionarios == 0){
-        printf("Nenhum funcionário cadastrado.\n");
-    } else {
-        for(int i = 0; i < qtd_funcionarios; i++){
-            printf("%d. Nome: %s | Email: %s | Cargo: %s | CPF: %s\n",
-                i+1, funcionarios[i].nome, funcionarios[i].email, funcionarios[i].cargo, funcionarios[i].cpf);
+void carregar_funcionario_por_cpf(char cpfBuscado[]) {
+    FILE *arq;
+    char nome[TAM_NOME_FUNC], email[TAM_EMAIL_FUNC], cargo[TAM_CARGO_FUNC], cpf[TAM_CPF_FUNC];
+
+    arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    if (arq == NULL) {
+        printf("Erro: não foi possível abrir o arquivo de funcionários.\n");
+        getchar();
+        return;
+    }
+
+    while (fscanf(arq, "%[^;];%[^;];%[^;];%[^\n]\n", nome, email, cargo, cpf) == 4) {
+        if (strcmp(cpf, cpfBuscado) == 0) {
+            printf("\n=== Funcionário encontrado ===\n");
+            printf("Nome: %s\n", nome);
+            printf("Email: %s\n", email);
+            printf("Cargo: %s\n", cargo);
+            printf("CPF: %s\n", cpf);
+            fclose(arq);
+            return;
         }
     }
-    Enter();
+
+    printf("\nFuncionário com CPF %s não encontrado.\n", cpfBuscado);
+    fclose(arq);
 }
 
-void tela_pesquisar_funcionario(void) {
+void tela_ver_funcionarios(void){
     system("cls||clear");
+    printf("\n=== Funcionários Cadastrados ===\n");
 
-    if(qtd_funcionarios == 0){
-        printf("Nenhum funcionário cadastrado.\n");
+    FILE *arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    if (arq == NULL) {
+        printf("Nenhum funcionário cadastrado (arquivo vazio ou não encontrado).\n");
         Enter();
         return;
     }
+
+    char nome[TAM_NOME_FUNC], email[TAM_EMAIL_FUNC], cargo[TAM_CARGO_FUNC], cpf[TAM_CPF_FUNC];
+    int count = 0;
+
+    while (fscanf(arq, "%[^;];%[^;];%[^;];%[^\n]\n", nome, email, cargo, cpf) == 4) {
+        printf("%d. Nome: %s | Email: %s | Cargo: %s | CPF: %s\n",
+               ++count, nome, email, cargo, cpf);
+    }
+
+    if (count == 0) {
+        printf("Nenhum funcionário cadastrado.\n");
+    }
+
+    fclose(arq);
+    Enter();
+}
+
+void tela_pesquisar_funcionario(void){
+    system("cls||clear");
 
     char cpf[TAM_CPF_FUNC];
     printf("Digite o CPF do funcionário que deseja visualizar: ");
     fgets(cpf, TAM_CPF_FUNC, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    int encontrado = -1;
-    for(int i = 0; i < qtd_funcionarios; i++){
-        if(strcmp(funcionarios[i].cpf, cpf) == 0){
-            encontrado = i;
-            break;
-        }
-    }
-
-    if(encontrado == -1){
-        printf("\nFuncionário com CPF %s não encontrado.\n", cpf);
-    } else {
-        int i = encontrado;
-        printf("Nome: %s | Email: %s | Cargo: %s | CPF: %s\n",
-            funcionarios[i].nome, funcionarios[i].email, funcionarios[i].cargo, funcionarios[i].cpf);
-    }
+    carregar_funcionario_por_cpf(cpf);
     Enter();
 }
 
-void tela_editar_funcionario(void) {
+void tela_editar_funcionario(void){
     system("cls||clear");
-
-    if(qtd_funcionarios == 0){
-        printf("Nenhum funcionário cadastrado.\n");
-        Enter();
-        return;
-    }
 
     char cpf[TAM_CPF_FUNC];
     printf("Digite o CPF do funcionário que deseja editar: ");
     fgets(cpf, TAM_CPF_FUNC, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    int encontrado = -1;
-    for(int i = 0; i < qtd_funcionarios; i++){
-        if(strcmp(funcionarios[i].cpf, cpf) == 0){
-            encontrado = i;
-            break;
+    FILE *arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    if (!arq) { printf("Erro ao abrir arquivo de funcionários.\n"); Enter(); return; }
+
+    FILE *temp = fopen("dados_funcionarios/temp.csv", "wt");
+    if (!temp) { fclose(arq); printf("Erro ao criar arquivo temporário.\n"); Enter(); return; }
+
+    char nome[TAM_NOME_FUNC], email[TAM_EMAIL_FUNC], cargo[TAM_CARGO_FUNC], cpfArq[TAM_CPF_FUNC];
+    int encontrado = 0;
+
+    while (fscanf(arq, "%[^;];%[^;];%[^;];%[^\n]\n", nome, email, cargo, cpfArq) == 4) {
+        if (strcmp(cpfArq, cpf) == 0) {
+            encontrado = 1;
+            Funcionario editado;
+
+            printf("Novo Nome: ");
+            fgets(editado.nome, TAM_NOME_FUNC, stdin);
+            editado.nome[strcspn(editado.nome, "\n")] = 0;
+
+            printf("Novo Email: ");
+            fgets(editado.email, TAM_EMAIL_FUNC, stdin);
+            editado.email[strcspn(editado.email, "\n")] = 0;
+
+            printf("Novo Cargo: ");
+            fgets(editado.cargo, TAM_CARGO_FUNC, stdin);
+            editado.cargo[strcspn(editado.cargo, "\n")] = 0;
+
+            strcpy(editado.cpf, cpfArq);
+
+            fprintf(temp, "%s;%s;%s;%s\n", editado.nome, editado.email, editado.cargo, editado.cpf);
+        } else {
+            fprintf(temp, "%s;%s;%s;%s\n", nome, email, cargo, cpfArq);
         }
     }
 
-    if(encontrado == -1){
-        printf("\nFuncionário com CPF %s não encontrado.\n", cpf);
-        Enter();
-        return;
-    }
+    fclose(arq);
+    fclose(temp);
+    remove("dados_funcionarios/funcionarios.csv");
+    rename("dados_funcionarios/temp.csv", "dados_funcionarios/funcionarios.csv");
 
-    Funcionario *f = &funcionarios[encontrado];
-
-    printf("Nome: ");
-    fgets(f->nome, TAM_NOME_FUNC, stdin);
-    f->nome[strcspn(f->nome, "\n")] = 0;
-
-    printf("Email: ");
-    fgets(f->email, TAM_EMAIL_FUNC, stdin);
-    f->email[strcspn(f->email, "\n")] = 0;
-
-    printf("Cargo: ");
-    fgets(f->cargo, TAM_CARGO, stdin);
-    f->cargo[strcspn(f->cargo, "\n")] = 0;
-
-    printf("CPF (apenas números): ");
-    fgets(f->cpf, TAM_CPF_FUNC, stdin);
-    f->cpf[strcspn(f->cpf, "\n")] = 0;
-
+if (encontrado) {
     printf("=======================================\n");
     printf("=    Edição realizada com sucesso!    =\n");
     printf("=======================================\n");
-    Enter();
+} else {
+        printf("===============================\n");
+        printf("= Funcionário não encontrado! =\n");
+        printf("===============================\n");
+}
+Enter();  
 }
 
-void tela_excluir_funcionario(void) {
+void tela_excluir_funcionario(void){
     system("cls||clear");
-    if(qtd_funcionarios == 0){
-        printf("Nenhum funcionário para excluir.\n");
-        Enter();
-        return;
-    }
 
     char cpf[TAM_CPF_FUNC];
     printf("Digite o CPF do funcionário para excluir: ");
     fgets(cpf, TAM_CPF_FUNC, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    int encontrado = -1;
-    for(int i = 0; i < qtd_funcionarios; i++){
-        if(strcmp(funcionarios[i].cpf, cpf) == 0){
-            encontrado = i;
-            break;
-        }
+    FILE *arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    if (!arq) { printf("Erro ao abrir arquivo de funcionários.\n"); Enter(); return; }
+
+    FILE *temp = fopen("dados_funcionarios/temp.csv", "wt");
+    if (!temp) { fclose(arq); printf("Erro ao criar arquivo temporário.\n"); Enter(); return; }
+
+    char nome[TAM_NOME_FUNC], email[TAM_EMAIL_FUNC], cargo[TAM_CARGO_FUNC], cpfArq[TAM_CPF_FUNC];
+    int encontrado = 0;
+
+    while (fscanf(arq, "%[^;];%[^;];%[^;];%[^\n]\n", nome, email, cargo, cpfArq) == 4) {
+        if (strcmp(cpfArq, cpf) != 0)
+            fprintf(temp, "%s;%s;%s;%s\n", nome, email, cargo, cpfArq);
+        else
+            encontrado = 1;
     }
 
-    if(encontrado == -1){
-        printf("===============================\n");
-        printf("= Funcionário não encontrado! =\n");
-        printf("===============================\n");
-    } else {
-        for(int i = encontrado; i < qtd_funcionarios - 1; i++){
-            funcionarios[i] = funcionarios[i+1];
-        }
-        qtd_funcionarios--;
-        printf("===================================\n");
-        printf("= Exclusão realizada com sucesso! =\n");
-        printf("===================================\n");
-    }
-    Enter();
+    fclose(arq);
+    fclose(temp);
+    remove("dados_funcionarios/funcionarios.csv");
+    rename("dados_funcionarios/temp.csv", "dados_funcionarios/funcionarios.csv");
+    
+
+if (encontrado) {
+    printf("===================================\n");
+    printf("= Exclusão realizada com sucesso! =\n");
+    printf("===================================\n");
+} else {
+    printf("===============================\n");
+    printf("= Funcionário não encontrado! =\n");
+    printf("===============================\n");
 }
-
-
+Enter();
+}
