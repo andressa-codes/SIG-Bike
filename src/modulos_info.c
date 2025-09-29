@@ -54,6 +54,10 @@ void tela_equipe(){
     printf("///                       Email: jezreel.asaias.silva.129@ufrn.edu.br       ///\n");
     printf("///                       Redes sociais: @Jezreel-Asaias                    ///\n");
     printf("///                                                                         ///\n");
+    printf("///                    -> Gabriel Victor de Souza Fernandes                 ///\n");
+    printf("///                       Email: gabrieldesouzaifrn2019@gmail.com           ///\n");
+    printf("///                       Redes sociais: @gabrielvictordesouza              ///\n");
+    printf("///                                                                         ///\n");
     printf("///                Git: https://github.com/andressa-codes/SIG-Bike.git      ///\n");
     printf("///                                                                         ///\n");
     printf("///////////////////////////////////////////////////////////////////////////////\n");
