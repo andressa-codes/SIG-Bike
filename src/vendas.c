@@ -12,7 +12,7 @@ int qtd_vendas = 0;
 // === Funções auxiliares para CSV ===
 
 int cliente_existe(const char *cpf) {
-    FILE *arq = fopen("dados_clientes/clientes.csv", "rt");
+    FILE *arq = fopen("dados/clientes.csv", "rt");
     if (!arq) return 0;
 
     char nome[100], email[100], cidade[100], cpf_lido[TAM_CPF];
@@ -28,7 +28,7 @@ int cliente_existe(const char *cpf) {
 }
 
 int funcionario_existe(const char *cpf) {
-    FILE *arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    FILE *arq = fopen("dados/funcionarios.csv", "rt");
     if (!arq) return 0;
 
     char nome[100], email[100], cargo[50], cpf_lido[TAM_CPF_FUNC];
@@ -44,7 +44,7 @@ int funcionario_existe(const char *cpf) {
 }
 
 int bicicleta_existe(int id, float *preco, int *estoque) {
-    FILE *arq = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    FILE *arq = fopen("dados/bicicletas.csv", "rt");
     if (!arq) return 0;
 
     char marca[50], modelo[50];
@@ -65,8 +65,8 @@ int bicicleta_existe(int id, float *preco, int *estoque) {
 }
 
 void atualizar_estoque_bicicleta(int id, int novo_estoque) {
-    FILE *arq = fopen("dados_bicicletas/bicicletas.csv", "rt");
-    FILE *temp = fopen("dados_bicicletas/temp.csv", "wt");
+    FILE *arq = fopen("dados/bicicletas.csv", "rt");
+    FILE *temp = fopen("dados/temp.csv", "wt");
     if (!arq || !temp) { if(arq) fclose(arq); return; }
 
     char marca[50], modelo[50];
@@ -80,14 +80,14 @@ void atualizar_estoque_bicicleta(int id, int novo_estoque) {
 
     fclose(arq);
     fclose(temp);
-    remove("dados_bicicletas/bicicletas.csv");
-    rename("dados_bicicletas/temp.csv", "dados_bicicletas/bicicletas.csv");
+    remove("dados/bicicletas.csv");
+    rename("dados/temp.csv", "dados/bicicletas.csv");
 }
 
 // === Funções de persistência de vendas ===
 
 void salvar_vendas_csv() {
-    FILE *arq = fopen("dados_vendas/vendas.csv", "wt");
+    FILE *arq = fopen("dados/vendas.csv", "wt");
     if (!arq) return;
 
     for (int i = 0; i < qtd_vendas; i++) {
@@ -100,7 +100,7 @@ void salvar_vendas_csv() {
 }
 
 void carregar_vendas_csv() {
-    FILE *arq = fopen("dados_vendas/vendas.csv", "rt");
+    FILE *arq = fopen("dados/vendas.csv", "rt");
     if (!arq) return;
 
     qtd_vendas = 0;

@@ -96,7 +96,7 @@ void tela_cadastrar_cliente(void){
 
     clientes[qtd_clientes++] = novo;
 
-    arq_clientes = fopen("dados_clientes/clientes.csv", "a");
+    arq_clientes = fopen("dados/clientes.csv", "a");
     if(arq_clientes == NULL){
         printf("Erro ao abrir o arquivo de clientes.\n");
         return;
@@ -121,7 +121,7 @@ void carregar_cliente_por_cpf(char cpfBuscado[]) {
     char cidade[TAM_CIDADE];
     char cpf[TAM_CPF];
 
-    arq = fopen("dados_clientes/clientes.csv", "rt");
+    arq = fopen("dados/clientes.csv", "rt");
     if (arq == NULL) {
         printf("Erro: não foi possível abrir o arquivo de clientes.\n");
         getchar();
@@ -148,7 +148,7 @@ void tela_ver_clientes(void){
     system("cls||clear");
     printf("\n=== Clientes Cadastrados ===\n");
 
-    FILE *arq = fopen("dados_clientes/clientes.csv", "rt");
+    FILE *arq = fopen("dados/clientes.csv", "rt");
     if (arq == NULL) {
         printf("Nenhum cliente cadastrado (arquivo vazio ou não encontrado).\n");
         Enter();
@@ -191,14 +191,14 @@ void tela_editar_cliente(void) {
     fgets(cpf, TAM_CPF, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    FILE *arq = fopen("dados_clientes/clientes.csv", "rt");
+    FILE *arq = fopen("dados/clientes.csv", "rt");
     if (!arq) {
         printf("Erro ao abrir arquivo de clientes.\n");
         Enter();
         return;
     }
 
-    FILE *temp = fopen("dados_clientes/temp.csv", "wt");
+    FILE *temp = fopen("dados/temp.csv", "wt");
     if (!temp) {
         fclose(arq);
         printf("Erro ao criar arquivo temporário.\n");
@@ -236,8 +236,8 @@ void tela_editar_cliente(void) {
 
     fclose(arq);
     fclose(temp);
-    remove("dados_clientes/clientes.csv");
-    rename("dados_clientes/temp.csv", "dados_clientes/clientes.csv");
+    remove("dados/clientes.csv");
+    rename("dados/temp.csv", "dados/clientes.csv");
 
     if (encontrado) {
         printf("=======================================\n");
@@ -257,14 +257,14 @@ void tela_excluir_cliente(void) {
     fgets(cpf, TAM_CPF, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    FILE *arq = fopen("dados_clientes/clientes.csv", "rt");
+    FILE *arq = fopen("dados/clientes.csv", "rt");
     if (!arq) {
         printf("Erro ao abrir arquivo de clientes.\n");
         Enter();
         return;
     }
 
-    FILE *temp = fopen("dados_clientes/temp.csv", "wt");
+    FILE *temp = fopen("dados/temp.csv", "wt");
     if (!temp) {
         fclose(arq);
         printf("Erro ao criar arquivo temporário.\n");
@@ -285,8 +285,8 @@ void tela_excluir_cliente(void) {
 
     fclose(arq);
     fclose(temp);
-    remove("dados_clientes/clientes.csv");
-    rename("dados_clientes/temp.csv", "dados_clientes/clientes.csv");
+    remove("dados/clientes.csv");
+    rename("dados/temp.csv", "dados/clientes.csv");
 
     if (encontrado) {
         printf("===================================\n");

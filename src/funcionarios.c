@@ -76,7 +76,7 @@ void tela_cadastrar_funcionario(void){
     fgets(novo.cpf, TAM_CPF_FUNC, stdin);
     novo.cpf[strcspn(novo.cpf, "\n")] = 0;
 
-    arq_funcionarios = fopen("dados_funcionarios/funcionarios.csv", "a");
+    arq_funcionarios = fopen("dados/funcionarios.csv", "a");
     if(arq_funcionarios == NULL){
         printf("Erro ao abrir o arquivo de funcionários.\n");
         return;
@@ -95,7 +95,7 @@ void carregar_funcionario_por_cpf(char cpfBuscado[]) {
     FILE *arq;
     char nome[TAM_NOME_FUNC], email[TAM_EMAIL_FUNC], cargo[TAM_CARGO_FUNC], cpf[TAM_CPF_FUNC];
 
-    arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    arq = fopen("dados/funcionarios.csv", "rt");
     if (arq == NULL) {
         printf("Erro: não foi possível abrir o arquivo de funcionários.\n");
         getchar();
@@ -122,7 +122,7 @@ void tela_ver_funcionarios(void){
     system("cls||clear");
     printf("\n=== Funcionários Cadastrados ===\n");
 
-    FILE *arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    FILE *arq = fopen("dados/funcionarios.csv", "rt");
     if (arq == NULL) {
         printf("Nenhum funcionário cadastrado (arquivo vazio ou não encontrado).\n");
         Enter();
@@ -165,10 +165,10 @@ void tela_editar_funcionario(void){
     fgets(cpf, TAM_CPF_FUNC, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    FILE *arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    FILE *arq = fopen("dados/funcionarios.csv", "rt");
     if (!arq) { printf("Erro ao abrir arquivo de funcionários.\n"); Enter(); return; }
 
-    FILE *temp = fopen("dados_funcionarios/temp.csv", "wt");
+    FILE *temp = fopen("dados/temp.csv", "wt");
     if (!temp) { fclose(arq); printf("Erro ao criar arquivo temporário.\n"); Enter(); return; }
 
     char nome[TAM_NOME_FUNC], email[TAM_EMAIL_FUNC], cargo[TAM_CARGO_FUNC], cpfArq[TAM_CPF_FUNC];
@@ -201,8 +201,8 @@ void tela_editar_funcionario(void){
 
     fclose(arq);
     fclose(temp);
-    remove("dados_funcionarios/funcionarios.csv");
-    rename("dados_funcionarios/temp.csv", "dados_funcionarios/funcionarios.csv");
+    remove("dados/funcionarios.csv");
+    rename("dados/temp.csv", "dados/funcionarios.csv");
 
 if (encontrado) {
     printf("=======================================\n");
@@ -224,10 +224,10 @@ void tela_excluir_funcionario(void){
     fgets(cpf, TAM_CPF_FUNC, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    FILE *arq = fopen("dados_funcionarios/funcionarios.csv", "rt");
+    FILE *arq = fopen("dados/funcionarios.csv", "rt");
     if (!arq) { printf("Erro ao abrir arquivo de funcionários.\n"); Enter(); return; }
 
-    FILE *temp = fopen("dados_funcionarios/temp.csv", "wt");
+    FILE *temp = fopen("dados/temp.csv", "wt");
     if (!temp) { fclose(arq); printf("Erro ao criar arquivo temporário.\n"); Enter(); return; }
 
     char nome[TAM_NOME_FUNC], email[TAM_EMAIL_FUNC], cargo[TAM_CARGO_FUNC], cpfArq[TAM_CPF_FUNC];
@@ -242,8 +242,8 @@ void tela_excluir_funcionario(void){
 
     fclose(arq);
     fclose(temp);
-    remove("dados_funcionarios/funcionarios.csv");
-    rename("dados_funcionarios/temp.csv", "dados_funcionarios/funcionarios.csv");
+    remove("dados/funcionarios.csv");
+    rename("dados/temp.csv", "dados/funcionarios.csv");
     
 
 if (encontrado) {
