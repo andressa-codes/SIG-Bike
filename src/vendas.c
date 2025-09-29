@@ -43,25 +43,27 @@ int funcionario_existe(const char *cpf) {
     return 0;
 }
 
-int bicicleta_existe(int id, float *preco, int *estoque) {
+// === Nova função: obtém informações completas da bicicleta ===
+int obter_info_bicicleta(int id, float *preco, int *estoque) {
     FILE *arq = fopen("dados/bicicletas.csv", "rt");
     if (!arq) return 0;
 
-    char marca[50], modelo[50];
-    int id_lido, estoque_lido;
+    char marca[50], modelo[50], cor[50];
+    int id_lido, ano_lido, estoque_lido;
     float preco_lido;
 
-    while (fscanf(arq, "%d;%49[^;];%49[^;];%f;%d\n", &id_lido, marca, modelo, &preco_lido, &estoque_lido) == 5) {
+    while (fscanf(arq, "%d;%49[^;];%49[^;];%d;%49[^;];%f;%d\n",
+                  &id_lido, marca, modelo, &ano_lido, cor, &preco_lido, &estoque_lido) == 7) {
         if (id_lido == id) {
             *preco = preco_lido;
             *estoque = estoque_lido;
             fclose(arq);
-            return 1;
+            return 1; // achou
         }
     }
 
     fclose(arq);
-    return 0;
+    return 0; // não achou
 }
 
 void atualizar_estoque_bicicleta(int id, int novo_estoque) {
@@ -69,13 +71,14 @@ void atualizar_estoque_bicicleta(int id, int novo_estoque) {
     FILE *temp = fopen("dados/temp.csv", "wt");
     if (!arq || !temp) { if(arq) fclose(arq); return; }
 
-    char marca[50], modelo[50];
-    int id_lido, estoque_lido;
+    char marca[50], modelo[50], cor[50];
+    int id_lido, ano_lido, estoque_lido;
     float preco_lido;
 
-    while (fscanf(arq, "%d;%49[^;];%49[^;];%f;%d\n", &id_lido, marca, modelo, &preco_lido, &estoque_lido) == 5) {
+    while (fscanf(arq, "%d;%49[^;];%49[^;];%d;%49[^;];%f;%d\n",
+                  &id_lido, marca, modelo, &ano_lido, cor, &preco_lido, &estoque_lido) == 7) {
         if (id_lido == id) estoque_lido = novo_estoque;
-        fprintf(temp, "%d;%s;%s;%.2f;%d\n", id_lido, marca, modelo, preco_lido, estoque_lido);
+        fprintf(temp, "%d;%s;%s;%d;%s;%.2f;%d\n", id_lido, marca, modelo, ano_lido, cor, preco_lido, estoque_lido);
     }
 
     fclose(arq);
@@ -185,7 +188,9 @@ void tela_cadastrar_venda() {
     printf("ID da bicicleta: "); fgets(entrada, sizeof(entrada), stdin);
     nova.id_bicicleta = atoi(entrada);
     float preco; int estoque;
-    if (!bicicleta_existe(nova.id_bicicleta, &preco, &estoque)) { printf("Bicicleta não encontrada!\n"); Enter(); return; }
+    if (!obter_info_bicicleta(nova.id_bicicleta, &preco, &estoque)) { 
+        printf("Bicicleta não encontrada!\n"); Enter(); return; 
+    }
 
     printf("Quantidade: "); fgets(entrada, sizeof(entrada), stdin);
     nova.quantidade = atoi(entrada);
@@ -197,9 +202,7 @@ void tela_cadastrar_venda() {
 
     vendas[qtd_vendas++] = nova;
     salvar_vendas_csv();
-    printf("=======================================\n");
-    printf("=     Venda realizada com sucesso!    =\n");
-    printf("=======================================\n");
+    printf("Venda realizada com sucesso!\n"); 
     Enter();
 }
 
@@ -239,7 +242,7 @@ void tela_editar_venda() {
         Venda *v = &vendas[i];
         if (v->id == id) {
             float preco; int estoque;
-            if (bicicleta_existe(v->id_bicicleta, &preco, &estoque)) {
+            if (obter_info_bicicleta(v->id_bicicleta, &preco, &estoque)) {
                 estoque += v->quantidade;
                 atualizar_estoque_bicicleta(v->id_bicicleta, estoque);
             }
@@ -253,7 +256,7 @@ void tela_editar_venda() {
             if (!funcionario_existe(v->cpf_funcionario)) { printf("Funcionário não encontrado!\n"); Enter(); return; }
 
             printf("ID bicicleta: "); fgets(entrada, sizeof(entrada), stdin); v->id_bicicleta=atoi(entrada);
-            if (!bicicleta_existe(v->id_bicicleta, &preco, &estoque)) { printf("Bicicleta não encontrada!\n"); Enter(); return; }
+            if (!obter_info_bicicleta(v->id_bicicleta, &preco, &estoque)) { printf("Bicicleta não encontrada!\n"); Enter(); return; }
 
             printf("Quantidade: "); fgets(entrada, sizeof(entrada), stdin); v->quantidade=atoi(entrada);
             if (v->quantidade > estoque) { printf("Estoque insuficiente!\n"); Enter(); return; }
@@ -277,7 +280,7 @@ void tela_excluir_venda() {
     for (int i = 0; i < qtd_vendas; i++) {
         if (vendas[i].id == id) {
             float preco; int estoque;
-            if (bicicleta_existe(vendas[i].id_bicicleta, &preco, &estoque)) {
+            if (obter_info_bicicleta(vendas[i].id_bicicleta, &preco, &estoque)) {
                 estoque += vendas[i].quantidade;
                 atualizar_estoque_bicicleta(vendas[i].id_bicicleta, estoque);
             }

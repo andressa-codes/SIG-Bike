@@ -78,7 +78,26 @@ void tela_cadastrar_bicicleta(void){
 
     Bicicleta novo;
     char entrada[50]; 
-    novo.id = qtd_bicicletas + 1;
+    int ultimo_id = 0;
+
+    // Lê o último ID já cadastrado no arquivo
+    arq_bicicletas = fopen("dados/bicicletas.csv", "rt");
+    if (arq_bicicletas != NULL) {
+        int id, ano, estoque;
+        char marca[TAM_MARCA], modelo[TAM_MODELO], cor[TAM_COR];
+        float preco;
+
+        while (fscanf(arq_bicicletas, "%d;%[^;];%[^;];%d;%[^;];%f;%d\n",
+                      &id, marca, modelo, &ano, cor, &preco, &estoque) == 7) {
+            if (id > ultimo_id) {
+                ultimo_id = id; // pega sempre o maior ID
+            }
+        }
+        fclose(arq_bicicletas);
+    }
+
+    // Novo ID será sempre o último + 1
+    novo.id = ultimo_id + 1;
 
     printf("Marca: ");
     fgets(novo.marca, TAM_MARCA, stdin);
@@ -106,8 +125,8 @@ void tela_cadastrar_bicicleta(void){
 
     bicicletas[qtd_bicicletas++] = novo;
 
-
-    arq_bicicletas = fopen("dados_bicicletas/bicicletas.csv", "a");
+    // Salva no arquivo
+    arq_bicicletas = fopen("dados/bicicletas.csv", "a");
     if(arq_bicicletas == NULL){
         printf("Erro ao abrir o arquivo de bicicletas.\n");
         return;
@@ -121,9 +140,8 @@ void tela_cadastrar_bicicleta(void){
     fprintf(arq_bicicletas, "%i\n", novo.estoque);
     fclose(arq_bicicletas);
 
-
     printf("\n===================================\n");
-    printf("= Cadastro realizado com sucesso!   =\n");
+    printf("= Cadastro realizado com sucesso! =\n");
     printf("= ID da bicicleta: %d\n", novo.id);
     printf("===================================\n");
     Enter();
@@ -131,11 +149,12 @@ void tela_cadastrar_bicicleta(void){
 
 
 
+
 void tela_ver_bicicletas(void){
     system("cls||clear");
     printf("\n=== Bicicletas Cadastradas ===\n");
 
-    FILE *arq_ver_bicicletas = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    FILE *arq_ver_bicicletas = fopen("dados/bicicletas.csv", "rt");
     if (arq_ver_bicicletas == NULL) {
         printf("Nenhuma bicicleta cadastrada (arquivo vazio ou não encontrado).\n");
         Enter();
@@ -174,7 +193,7 @@ while (fscanf(arq_ver_bicicletas, "%d;%[^;];%[^;];%d;%[^;];%f;%d\n",
 void tela_pesquisar_bicicleta(void) {
     system("cls||clear");
 
-    FILE *arq_pesquisar_bicicletas = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    FILE *arq_pesquisar_bicicletas = fopen("dados/bicicletas.csv", "rt");
     if (arq_pesquisar_bicicletas == NULL) {
         printf("Nenhuma bicicleta cadastrada (arquivo vazio ou não encontrado).\n");
         Enter();
@@ -221,14 +240,14 @@ void tela_pesquisar_bicicleta(void) {
 void tela_editar_bicicleta(void){
     system("cls||clear");
 
-    FILE *arq = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    FILE *arq = fopen("dados/bicicletas.csv", "rt");
     if (!arq) {
         printf("Nenhuma bicicleta cadastrada.\n");
         Enter();
         return;
     }
 
-    FILE *temp = fopen("dados_bicicletas/temp.csv", "wt");
+    FILE *temp = fopen("dados/temp.csv", "wt");
     if (!temp) {
         fclose(arq);
         printf("Erro ao criar arquivo temporário.\n");
@@ -283,8 +302,8 @@ void tela_editar_bicicleta(void){
 
     fclose(arq);
     fclose(temp);
-    remove("dados_bicicletas/bicicletas.csv");
-    rename("dados_bicicletas/temp.csv", "dados_bicicletas/bicicletas.csv");
+    remove("dados/bicicletas.csv");
+    rename("dados/temp.csv", "dados/bicicletas.csv");
 
     if (encontrado)
         printf("Bicicleta cadastrada com sucesso\n");
@@ -302,14 +321,14 @@ void tela_excluir_bicicleta(void){
     printf("Digite o ID da bicicleta que deseja excluir: ");
     scanf("%d", &id_excluir);
 
-    FILE *arq = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    FILE *arq = fopen("dados/bicicletas.csv", "rt");
     if (arq == NULL) {
         printf("Nenhuma bicicleta cadastrada.\n");
         Enter();
         return;
     }
 
-    FILE *temp = fopen("dados_bicicletas/temp.csv", "wt");
+    FILE *temp = fopen("dados/temp.csv", "wt");
     if (temp == NULL) {
         printf("Erro ao criar arquivo temporário.\n");
         fclose(arq);
@@ -338,8 +357,8 @@ void tela_excluir_bicicleta(void){
     fclose(arq);
     fclose(temp);
 
-    remove("dados_bicicletas/bicicletas.csv");
-    rename("dados_bicicletas/temp.csv", "dados_bicicletas/bicicletas.csv");
+    remove("dados/bicicletas.csv");
+    rename("dados/temp.csv", "dados/bicicletas.csv");
 
     if (encontrado) {
         printf(" Bicicleta de ID  excluída com sucesso!\n");
