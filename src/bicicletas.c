@@ -68,6 +68,7 @@ void modulo_bicicletas(void) {
 }
 
 void tela_cadastrar_bicicleta(void){
+    FILE *arq_bicicletas;
     system("cls||clear");
     if(qtd_bicicletas >= MAX_BICICLETAS){
         printf("Limite de bicicletas atingido!\n");
@@ -105,6 +106,22 @@ void tela_cadastrar_bicicleta(void){
 
     bicicletas[qtd_bicicletas++] = novo;
 
+
+    arq_bicicletas = fopen("dados_bicicletas/bicicletas.csv", "a");
+    if(arq_bicicletas == NULL){
+        printf("Erro ao abrir o arquivo de bicicletas.\n");
+        return;
+    }
+    fprintf(arq_bicicletas, "%d;", novo.id); 
+    fprintf(arq_bicicletas, "%s;", novo.marca);
+    fprintf(arq_bicicletas, "%s;", novo.modelo);
+    fprintf(arq_bicicletas, "%i;", novo.ano);
+    fprintf(arq_bicicletas, "%s;", novo.cor);
+    fprintf(arq_bicicletas, "%f;", novo.preco);
+    fprintf(arq_bicicletas, "%i\n", novo.estoque);
+    fclose(arq_bicicletas);
+
+
     printf("\n===================================\n");
     printf("= Cadastro realizado com sucesso!   =\n");
     printf("= ID da bicicleta: %d\n", novo.id);
@@ -112,155 +129,223 @@ void tela_cadastrar_bicicleta(void){
     Enter();
 }
 
+
+
 void tela_ver_bicicletas(void){
     system("cls||clear");
     printf("\n=== Bicicletas Cadastradas ===\n");
-    if(qtd_bicicletas == 0){
-        printf("Nenhuma bicicleta cadastrada.\n");
-    } else {
-        for(int i = 0; i < qtd_bicicletas; i++){
-            printf("%d. Marca: %s | Modelo: %s | Ano: %d | Cor: %s | Preço: R$ %.2f | Estoque: %d\n",
-                i+1, bicicletas[i].marca, bicicletas[i].modelo, bicicletas[i].ano, bicicletas[i].cor, bicicletas[i].preco, bicicletas[i].estoque
-            );
-        }
+
+    FILE *arq_ver_bicicletas = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    if (arq_ver_bicicletas == NULL) {
+        printf("Nenhuma bicicleta cadastrada (arquivo vazio ou não encontrado).\n");
+        Enter();
+        return;
     }
+   
+
+
+int id;
+char marca[TAM_MARCA], modelo[TAM_MODELO], cor[TAM_COR];
+int ano, estoque;
+float preco;
+int count = 0;
+
+
+
+
+while (fscanf(arq_ver_bicicletas, "%d;%[^;];%[^;];%d;%[^;];%f;%d\n",
+              &id, marca, modelo, &ano, cor, &preco, &estoque) == 7) {
+    printf("ID: %d | Marca: %s | Modelo: %s | Ano: %d | Cor: %s | Preço: %.2f | Estoque: %d\n",
+           id, marca, modelo, ano, cor, preco, estoque);
+    count++;
+}
+
+    if (count == 0) {
+        printf("Nenhuma Bicicleta cadastrado.\n");
+    }
+
+    fclose(arq_ver_bicicletas);
     Enter();
 }
 
-void tela_pesquisar_bicicleta(void){
+
+ // aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+void tela_pesquisar_bicicleta(void) {
     system("cls||clear");
-    
-    if(qtd_bicicletas == 0){
-        printf("Nenhuma bicicleta cadastrada.\n");
+
+    FILE *arq_pesquisar_bicicletas = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    if (arq_pesquisar_bicicletas == NULL) {
+        printf("Nenhuma bicicleta cadastrada (arquivo vazio ou não encontrado).\n");
         Enter();
         return;
     }
 
-    int id;
-    char entrada[50];
+    int id, ano, estoque, idBuscado;
+    char marca[TAM_MARCA], modelo[TAM_MODELO], cor[TAM_COR];
+    float preco;
+    int encontrado = 0;
 
-    printf("Digite o ID da bicicleta que deseja visualizar: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    id = atoi(entrada);
+    printf("Digite o ID da bicicleta que deseja ver: ");
+    scanf("%d", &idBuscado);
+    getchar(); // limpa o ENTER do buffer
 
-    int encontrado = -1;
-    for(int i = 0; i < qtd_bicicletas; i++){
-        if(bicicletas[i].id == id){
-            encontrado = i;
+    while (fscanf(arq_pesquisar_bicicletas, "%d;%[^;];%[^;];%d;%[^;];%f;%d\n",
+                  &id, marca, modelo, &ano, cor, &preco, &estoque) == 7) {
+
+        if (id == idBuscado) {
+            printf("\n--- Bicicleta Encontrada ---\n");
+            printf("ID: %d\n", id);
+            printf("Marca: %s\n", marca);
+            printf("Modelo: %s\n", modelo);
+            printf("Ano: %d\n", ano);
+            printf("Cor: %s\n", cor);
+            printf("Preço: %.2f\n", preco);
+            printf("Estoque: %d\n", estoque);
+            encontrado = 1;
             break;
         }
     }
 
-    if(encontrado == -1){
-        printf("\nBicicleta com ID %d não encontrada.\n", id);
-    } else {
-        int i = encontrado;
-        printf("%d. Marca: %s | Modelo: %s | Ano: %d | Cor: %s | Preço: R$ %.2f | Estoque: %d\n",
-            bicicletas[i].id, bicicletas[i].marca, bicicletas[i].modelo, bicicletas[i].ano, 
-            bicicletas[i].cor, bicicletas[i].preco, bicicletas[i].estoque
-        );
+    fclose(arq_pesquisar_bicicletas);
+
+    if (!encontrado) {
+        printf("\nNenhuma bicicleta encontrada com esse ID.\n");
     }
-    Enter();
+
+    Enter(); // pausa antes de voltar pro menu
 }
+
+ // aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 void tela_editar_bicicleta(void){
     system("cls||clear");
-    if(qtd_bicicletas == 0){
+
+    FILE *arq = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    if (!arq) {
         printf("Nenhuma bicicleta cadastrada.\n");
         Enter();
         return;
     }
 
-    char entrada[50];
-    int id;
-    printf("Digite o ID da bicicleta que deseja editar: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    id = atoi(entrada);
-
-    int encontrado = -1;
-    for(int i = 0; i < qtd_bicicletas; i++){
-        if(bicicletas[i].id == id){
-            encontrado = i;
-            break;
-        }
-    }
-
-    if(encontrado == -1){
-        printf("\nBicicleta com ID %d não encontrada.\n", id);
+    FILE *temp = fopen("dados_bicicletas/temp.csv", "wt");
+    if (!temp) {
+        fclose(arq);
+        printf("Erro ao criar arquivo temporário.\n");
         Enter();
         return;
     }
 
-    Bicicleta *b = &bicicletas[encontrado];
+    int id, ano, estoque, idBuscado;
+    char marca[TAM_MARCA], modelo[TAM_MODELO], cor[TAM_COR];
+    float preco;
+    int encontrado = 0;
 
-    printf("Marca: ");
-    fgets(b->marca, TAM_MARCA, stdin);
-    b->marca[strcspn(b->marca, "\n")] = 0;
+    printf("Digite o ID da bicicleta que deseja editar: ");
+    scanf("%d", &idBuscado);
+    getchar();
 
-    printf("Modelo: ");
-    fgets(b->modelo, TAM_MODELO, stdin);
-    b->modelo[strcspn(b->modelo, "\n")] = 0;
+    while (fscanf(arq, "%d;%[^;];%[^;];%d;%[^;];%f;%d\n",
+                  &id, marca, modelo, &ano, cor, &preco, &estoque) == 7) {
 
-    printf("Ano: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    b->ano = atoi(entrada);   
+        if (id == idBuscado) {
+            encontrado = 1;
+            printf("\n--- Editando bicicleta ID %d ---\n", id);
 
-    printf("Cor: ");
-    fgets(b->cor, TAM_COR, stdin);
-    b->cor[strcspn(b->cor, "\n")] = 0;
+            printf("Nova Marca: ");
+            fgets(marca, TAM_MARCA, stdin);
+            marca[strcspn(marca, "\n")] = 0;
 
-    printf("Preço: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    b->preco = atof(entrada); 
+            printf("Novo Modelo: ");
+            fgets(modelo, TAM_MODELO, stdin);
+            modelo[strcspn(modelo, "\n")] = 0;
 
-    printf("Quantidade em estoque: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    b->estoque = atoi(entrada);
+            printf("Novo Ano: ");
+            scanf("%d", &ano);
+            getchar();
 
-    printf("=======================================\n");
-    printf("=    Edição realizada com sucesso!    =\n");
-    printf("=======================================\n");
+            printf("Nova Cor: ");
+            fgets(cor, TAM_COR, stdin);
+            cor[strcspn(cor, "\n")] = 0;
+
+            printf("Novo Preço: ");
+            scanf("%f", &preco);
+            getchar();
+
+            printf("Novo Estoque: ");
+            scanf("%d", &estoque);
+            getchar();
+        }
+
+        fprintf(temp, "%d;%s;%s;%d;%s;%.2f;%d\n",
+                id, marca, modelo, ano, cor, preco, estoque);
+    }
+
+    fclose(arq);
+    fclose(temp);
+    remove("dados_bicicletas/bicicletas.csv");
+    rename("dados_bicicletas/temp.csv", "dados_bicicletas/bicicletas.csv");
+
+    if (encontrado)
+        printf("Bicicleta cadastrada com sucesso\n");
+    else
+        printf("Bicicleta com ID não encontrada.\n");
+
     Enter();
 }
 
 void tela_excluir_bicicleta(void){
     system("cls||clear");
+    printf("\n=== Excluir Bicicleta ===\n");
 
-    if(qtd_bicicletas == 0){
-        printf("Nenhuma bicicleta cadastrada para excluir.\n");
+    int id_excluir;
+    printf("Digite o ID da bicicleta que deseja excluir: ");
+    scanf("%d", &id_excluir);
+
+    FILE *arq = fopen("dados_bicicletas/bicicletas.csv", "rt");
+    if (arq == NULL) {
+        printf("Nenhuma bicicleta cadastrada.\n");
         Enter();
         return;
     }
 
-    char entrada[50];
-    int id;
-    printf("Digite o ID da bicicleta para excluir: ");
-    fgets(entrada, sizeof(entrada), stdin);
-    id = atoi(entrada);
+    FILE *temp = fopen("dados_bicicletas/temp.csv", "wt");
+    if (temp == NULL) {
+        printf("Erro ao criar arquivo temporário.\n");
+        fclose(arq);
+        Enter();
+        return;
+    }
 
-    int encontrado = -1;
-    for(int i = 0; i < qtd_bicicletas; i++){
-        if(bicicletas[i].id == id){
-            encontrado = i;
-            break;
+    char linha[256];
+    int id, ano, estoque;
+    char marca[TAM_MARCA], modelo[TAM_MODELO], cor[TAM_COR];
+    float preco;
+    int encontrado = 0;
+
+    while (fgets(linha, sizeof(linha), arq)) {
+        if (sscanf(linha, "%d;%[^;];%[^;];%d;%[^;];%f;%d",
+                   &id, marca, modelo, &ano, cor, &preco, &estoque) == 7) {
+            if (id == id_excluir) {
+                encontrado = 1; // achou o ID, não copia
+            } else {
+                fprintf(temp, "%d;%s;%s;%d;%s;%.2f;%d\n",
+                        id, marca, modelo, ano, cor, preco, estoque);
+            }
         }
     }
 
-    system("cls||clear");
-    if(encontrado == -1){
-        printf("=============================\n");
-        printf("= Bicicleta não encontrada! =\n");
-        printf("=============================\n");
+    fclose(arq);
+    fclose(temp);
+
+    remove("dados_bicicletas/bicicletas.csv");
+    rename("dados_bicicletas/temp.csv", "dados_bicicletas/bicicletas.csv");
+
+    if (encontrado) {
+        printf(" Bicicleta de ID  excluída com sucesso!\n");
     } else {
-
-        for(int i = encontrado; i < qtd_bicicletas - 1; i++){
-            bicicletas[i] = bicicletas[i+1];
-        }
-        qtd_bicicletas--; 
-
-        printf("===================================\n");
-        printf("= Exclusão realizada com sucesso! =\n");
-        printf("===================================\n");
+        printf(" Nenhuma bicicleta encontrada com o ID .\n");
     }
+
     Enter();
 }
