@@ -58,12 +58,12 @@ int obter_info_bicicleta(int id, float *preco, int *estoque) {
             *preco = preco_lido;
             *estoque = estoque_lido;
             fclose(arq);
-            return 1; // achou
+            return 1;
         }
     }
 
     fclose(arq);
-    return 0; // não achou
+    return 0;
 }
 
 void atualizar_estoque_bicicleta(int id, int novo_estoque) {
