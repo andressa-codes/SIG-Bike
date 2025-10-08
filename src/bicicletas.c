@@ -80,7 +80,7 @@ void tela_cadastrar_bicicleta(void){
     char entrada[50]; 
     int ultimo_id = 0;
 
-    // Lê o último ID já cadastrado no arquivo
+    
     arq_bicicletas = fopen("dados/bicicletas.csv", "rt");
     if (arq_bicicletas != NULL) {
         int id, ano, estoque;
@@ -90,13 +90,13 @@ void tela_cadastrar_bicicleta(void){
         while (fscanf(arq_bicicletas, "%d;%[^;];%[^;];%d;%[^;];%f;%d\n",
                       &id, marca, modelo, &ano, cor, &preco, &estoque) == 7) {
             if (id > ultimo_id) {
-                ultimo_id = id; // pega sempre o maior ID
+                ultimo_id = id;
             }
         }
         fclose(arq_bicicletas);
     }
 
-    // Novo ID será sempre o último + 1
+
     novo.id = ultimo_id + 1;
 
     printf("Marca: ");
@@ -125,7 +125,7 @@ void tela_cadastrar_bicicleta(void){
 
     bicicletas[qtd_bicicletas++] = novo;
 
-    // Salva no arquivo
+    
     arq_bicicletas = fopen("dados/bicicletas.csv", "a");
     if(arq_bicicletas == NULL){
         printf("Erro ao abrir o arquivo de bicicletas.\n");
@@ -188,7 +188,7 @@ while (fscanf(arq_ver_bicicletas, "%d;%[^;];%[^;];%d;%[^;];%f;%d\n",
 }
 
 
- // aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ 
 
 void tela_pesquisar_bicicleta(void) {
     system("cls||clear");
@@ -207,7 +207,7 @@ void tela_pesquisar_bicicleta(void) {
 
     printf("Digite o ID da bicicleta que deseja ver: ");
     scanf("%d", &idBuscado);
-    getchar(); // limpa o ENTER do buffer
+    getchar();
 
     while (fscanf(arq_pesquisar_bicicletas, "%d;%[^;];%[^;];%d;%[^;];%f;%d\n",
                   &id, marca, modelo, &ano, cor, &preco, &estoque) == 7) {
@@ -232,10 +232,10 @@ void tela_pesquisar_bicicleta(void) {
         printf("\nNenhuma bicicleta encontrada com esse ID.\n");
     }
 
-    Enter(); // pausa antes de voltar pro menu
+    Enter();
 }
 
- // aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ 
 
 void tela_editar_bicicleta(void){
     system("cls||clear");
@@ -346,7 +346,7 @@ void tela_excluir_bicicleta(void){
         if (sscanf(linha, "%d;%[^;];%[^;];%d;%[^;];%f;%d",
                    &id, marca, modelo, &ano, cor, &preco, &estoque) == 7) {
             if (id == id_excluir) {
-                encontrado = 1; // achou o ID, não copia
+                encontrado = 1;
             } else {
                 fprintf(temp, "%d;%s;%s;%d;%s;%.2f;%d\n",
                         id, marca, modelo, ano, cor, preco, estoque);
