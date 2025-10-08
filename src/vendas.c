@@ -9,7 +9,7 @@
 Venda vendas[MAX_VENDAS];
 int qtd_vendas = 0;
 
-// === Funções auxiliares para CSV ===
+
 
 int cliente_existe(const char *cpf) {
     FILE *arq = fopen("dados/clientes.csv", "rt");
@@ -43,7 +43,7 @@ int funcionario_existe(const char *cpf) {
     return 0;
 }
 
-// === Nova função: obtém informações completas da bicicleta ===
+
 int obter_info_bicicleta(int id, float *preco, int *estoque) {
     FILE *arq = fopen("dados/bicicletas.csv", "rt");
     if (!arq) return 0;
@@ -87,7 +87,7 @@ void atualizar_estoque_bicicleta(int id, int novo_estoque) {
     rename("dados/temp.csv", "dados/bicicletas.csv");
 }
 
-// === Funções de persistência de vendas ===
+
 
 void salvar_vendas_csv() {
     FILE *arq = fopen("dados/vendas.csv", "wt");
@@ -121,7 +121,7 @@ void carregar_vendas_csv() {
     fclose(arq);
 }
 
-// === Funções principais do módulo de vendas ===
+
 
 void modulo_vendas() {
     carregar_vendas_csv();
@@ -168,7 +168,7 @@ void modulo_vendas() {
     } while(opcao != 6);
 }
 
-// === CRUD de vendas ===
+
 
 void tela_cadastrar_venda() {
     if (qtd_vendas >= MAX_VENDAS) { printf("Limite de vendas atingido!\n"); Enter(); return; }

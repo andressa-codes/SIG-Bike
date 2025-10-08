@@ -179,7 +179,7 @@ void tela_pesquisar_cliente(void) {
     fgets(cpf, TAM_CPF, stdin);
     cpf[strcspn(cpf, "\n")] = 0;
 
-    carregar_cliente_por_cpf(cpf); // <-- busca direto no CSV
+    carregar_cliente_por_cpf(cpf);
     Enter();
 }
 
@@ -226,7 +226,7 @@ void tela_editar_cliente(void) {
             fgets(editado.cidade, TAM_CIDADE, stdin);
             editado.cidade[strcspn(editado.cidade, "\n")] = 0;
 
-            strcpy(editado.cpf, cpfArq); // mantém o CPF original
+            strcpy(editado.cpf, cpfArq);
 
             fprintf(temp, "%s;%s;%s;%s\n", editado.nome, editado.email, editado.cidade, editado.cpf);
         } else {
