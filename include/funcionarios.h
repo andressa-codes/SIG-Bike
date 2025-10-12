@@ -4,7 +4,9 @@
 #define TAM_NOME_FUNC 50
 #define TAM_EMAIL_FUNC 50
 #define TAM_CARGO_FUNC 30
-#define TAM_CPF_FUNC 12
+#define TAM_CPF_FUNC 15
+
+#define ARQ_FUNCIONARIOS "dados/funcionarios.dat"
 
 typedef struct {
     char nome[TAM_NOME_FUNC];
@@ -13,12 +15,13 @@ typedef struct {
     char cpf[TAM_CPF_FUNC];
 } Funcionario;
 
-// Funções do módulo de funcionários
 void modulo_funcionarios(void);
 void tela_cadastrar_funcionario(void);
 void tela_ver_funcionarios(void);
 void tela_pesquisar_funcionario(void);
 void tela_editar_funcionario(void);
 void tela_excluir_funcionario(void);
+
+int funcionario_existe_arquivo(const char *cpf); // utilitária para outros módulos
 
 #endif
