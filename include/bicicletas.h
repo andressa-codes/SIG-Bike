@@ -25,5 +25,6 @@ void tela_ver_bicicletas(void);
 void tela_pesquisar_bicicleta(void);
 void tela_editar_bicicleta(void);
 void tela_excluir_bicicleta(void);
-
+int obter_info_bicicleta(int id, float *preco, int *estoque);
+void atualizar_estoque_bicicleta(int id, int novo_estoque);
 #endif
