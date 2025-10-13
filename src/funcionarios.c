@@ -10,15 +10,15 @@ void modulo_funcionarios(void) {
     int opcao;
 
     do {
-        system("cls||clear");
+        system("clear||cls");
         printf("///////////////////////////////////////////////////////////////////////////////\n");
         printf("///                                                                         ///\n");
-        printf("///             Universidade Federal do Rio Grande do Norte                 ///\n");
-        printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
-        printf("///               Departamento de Computação e Tecnologia                   ///\n");
-        printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
-        printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
-        printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
+        printf("///                   ____ ___ ____       ____  _ _                         ///\n");
+        printf("///                  / ___|_ _/ ___|     | __ )(_) | _____                  ///\n");
+        printf("///                  \\___ \\| | |  _ _____|  _ \\| | |/ / _ \\                 ///\n");
+        printf("///                   ___) | | |_| |_____| |_) | |   <  __/                 ///\n");
+        printf("///                  |____/___\\____|     |____/|_|_|\\_\\___|                 ///\n");
+        printf("///                                                                         ///\n");
         printf("///                                                                         ///\n");
         printf("///////////////////////////////////////////////////////////////////////////////\n");
         printf("///                                                                         ///\n");
@@ -33,7 +33,8 @@ void modulo_funcionarios(void) {
         printf("///                                                                         ///\n");
         printf("///            Escolha a opção desejada:                                    ///\n");
         printf("///                                                                         ///\n");
-        printf("/////////////////////////////////////////////////////////////////////////////\n\n");
+        printf("///////////////////////////////////////////////////////////////////////////////\n");
+
         if (scanf("%d", &opcao) != 1) { while(getchar()!='\n'); opcao = 0; }
         while(getchar()!='\n');
 

@@ -1,11 +1,4 @@
-/* src/vendas.c
-   Módulo de vendas — armazena vendas em binário (VENDAS_FILE)
-   Depende das funções públicas:
-     - cliente_existe_arquivo(const char*)
-     - funcionario_existe_arquivo(const char*)
-     - obter_info_bicicleta(int, float*, int*)
-     - atualizar_estoque_bicicleta(int, int)
-*/
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,16 +49,15 @@ void modulo_vendas(void) {
     int opcao;
 
     do {
-        system("cls||clear");
-        printf("\n");
+        system("clear||cls");
         printf("///////////////////////////////////////////////////////////////////////////////\n");
         printf("///                                                                         ///\n");
-        printf("///             Universidade Federal do Rio Grande do Norte                 ///\n");
-        printf("///                 Centro de Ensino Superior do Seridó                     ///\n");
-        printf("///               Departamento de Computação e Tecnologia                   ///\n");
-        printf("///                  Disciplina DCT1106 -- Programação                      ///\n");
-        printf("///          Projeto Sistema de Gestão de uma loja de bicicletas            ///\n");
-        printf("///   Developed by @andressa-codes and @Jezreel-Asaias -- since Aug, 2025   ///\n");
+        printf("///                   ____ ___ ____       ____  _ _                         ///\n");
+        printf("///                  / ___|_ _/ ___|     | __ )(_) | _____                  ///\n");
+        printf("///                  \\___ \\| | |  _ _____|  _ \\| | |/ / _ \\                 ///\n");
+        printf("///                   ___) | | |_| |_____| |_) | |   <  __/                 ///\n");
+        printf("///                  |____/___\\____|     |____/|_|_|\\_\\___|                 ///\n");
+        printf("///                                                                         ///\n");
         printf("///                                                                         ///\n");
         printf("///////////////////////////////////////////////////////////////////////////////\n");
         printf("///                                                                         ///\n");
