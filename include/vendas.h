@@ -15,6 +15,7 @@ typedef struct {
     int id_bicicleta;
     int quantidade;
     float valor_total;
+    char status; // 'A' = ativo, 'I' = inativo
 } Venda;
 
 void modulo_vendas(void);
