@@ -66,6 +66,7 @@ void tela_cadastrar_funcionario(void) {
     if (!fp) { printf("Erro ao abrir o arquivo de funcionários.\n"); Enter(); return; }
 
     Funcionario novo;
+    novo.status = 'A'; // Define o status como ativo ao cadastrar
     system("cls||clear");
     printf("=== Cadastro de Funcionário ===\n");
 
@@ -103,6 +104,7 @@ void tela_ver_funcionarios(void) {
     system("cls||clear");
     printf("=== Funcionários Cadastrados ===\n\n");
     while (fread(&f, sizeof(Funcionario), 1, fp) == 1) {
+        if (f.status == 'I') continue; // Pula funcionários inativos
         printf("%d. Nome: %s | Email: %s | Cargo: %s | CPF: %s\n",
                ++count, f.nome, f.email, f.cargo, f.cpf);
     }
@@ -124,6 +126,7 @@ void tela_pesquisar_funcionario(void) {
     fgets(cpfBuscado, TAM_CPF_FUNC, stdin); cpfBuscado[strcspn(cpfBuscado, "\n")] = 0;
 
     while (fread(&f, sizeof(Funcionario), 1, fp) == 1) {
+        if (f. status == 'I') continue; // Pula funcionários inativos
         if (strcmp(f.cpf, cpfBuscado) == 0) {
             printf("\n=== Funcionário encontrado ===\n");
             printf("Nome: %s\nEmail: %s\nCargo: %s\nCPF: %s\n",
@@ -197,29 +200,52 @@ void tela_excluir_funcionario(void) {
     char cpf[TAM_CPF_FUNC];
     Funcionario f;
     int encontrado = 0;
+    int tipo_exclusao;
 
     system("cls||clear");
     printf("Digite o CPF do funcionário a excluir: ");
     fgets(cpf, TAM_CPF_FUNC, stdin); cpf[strcspn(cpf, "\n")] = 0;
 
+    printf("============== Tipo de exclusão =============\n");
+    printf("= 1. Exclusão lógica (inativar funcionário) =\n");
+    printf("= 2. Exclusão física (remover do sistema)   =\n");
+    printf("=============================================\n");
+    printf("Escolha uma opção: ");
+    scanf("%d", &tipo_exclusao);
+    getchar();
+
     while (fread(&f, sizeof(Funcionario), 1, fp) == 1) {
-        if (strcmp(f.cpf, cpf) != 0) fwrite(&f, sizeof(Funcionario), 1, temp);
-        else encontrado = 1;
+        if (strcmp(f.cpf, cpf) == 0) {
+            encontrado = 1;
+            if (tipo_exclusao == 1) {
+                f.status = 'I'; // Exclusão lógica
+                printf("Funcionário inativado com sucesso.\n");
+                fwrite(&f, sizeof(Funcionario), 1, temp);
+            }
+            // Exclusão física: não escreve o registro no temp
+        } else {
+            fwrite(&f, sizeof(Funcionario), 1, temp);
+        }
     }
 
     fclose(fp);
     fclose(temp);
+
     remove(ARQ_FUNCIONARIOS);
     rename(TEMP_FUNC, ARQ_FUNCIONARIOS);
 
-    if (encontrado) {
-    printf("===================================\n");
-    printf("= Exclusão realizada com sucesso! =\n");
-    printf("===================================\n");
-}   else {
-    printf("===============================\n");
-    printf("= Funcionário não encontrado! =\n");
-    printf("===============================\n");
-}
+    if (encontrado && tipo_exclusao == 2) {
+        printf("===================================\n");
+        printf("= Funcionário excluído com sucesso! =\n");
+        printf("===================================\n");
+    } else if (!encontrado) {
+        printf("===================================\n");
+        printf("= Funcionário não encontrado!     =\n");
+        printf("===================================\n");
+    }
+
     Enter();
-}
+} 
+
+
+
