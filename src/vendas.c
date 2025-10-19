@@ -43,7 +43,7 @@ static int salvar_vendas_binario(void) {
     return 1;
 }
 
-// Menu principal do módulo de vendas
+
 void modulo_vendas(void) {
     carregar_vendas_binario();
     int opcao;
@@ -92,12 +92,13 @@ void modulo_vendas(void) {
     } while (opcao != 6);
 }
 
-// Cadastrar uma venda
+
 void tela_cadastrar_venda(void) {
     carregar_vendas_binario();
     if (qtd_vendas >= MAX_VENDAS) { printf("Limite de vendas atingido!\n"); Enter(); return; }
 
     Venda nova;
+    nova.status = 'A';
     char entrada[64];
     float preco;
     int estoque;
@@ -140,21 +141,33 @@ void tela_cadastrar_venda(void) {
     Enter();
 }
 
-// Ver todas as vendas
+
 void tela_ver_vendas(void) {
     carregar_vendas_binario();
-    if (qtd_vendas == 0) { printf("Nenhuma venda cadastrada.\n"); Enter(); return; }
+    if (qtd_vendas == 0) { 
+        printf("Nenhuma venda cadastrada.\n"); 
+        Enter(); 
+        return; 
+    }
 
     system("cls||clear");
+    int count = 0;
     for (int i = 0; i < qtd_vendas; i++) {
+        if (vendas[i].status == 'I') continue; // pula vendas inativas
         printf("%d. Cliente: %s | Funcionário: %s | Bicicleta: %d | Qtde: %d | Total: %.2f\n",
                vendas[i].id, vendas[i].cpf_cliente, vendas[i].cpf_funcionario,
                vendas[i].id_bicicleta, vendas[i].quantidade, vendas[i].valor_total);
+        count++;
     }
+
+    if (count == 0) {
+        printf("Nenhuma venda ativa encontrada.\n");
+    }
+
     Enter();
 }
 
-// Pesquisar venda por ID
+
 void tela_pesquisar_venda(void) {
     carregar_vendas_binario();
     if (qtd_vendas == 0) { printf("Nenhuma venda cadastrada.\n"); Enter(); return; }
@@ -179,7 +192,7 @@ void tela_pesquisar_venda(void) {
     Enter();
 }
 
-// Editar uma venda
+
 void tela_editar_venda(void) {
     carregar_vendas_binario();
     if (qtd_vendas == 0) { printf("Nenhuma venda cadastrada.\n"); Enter(); return; }
@@ -242,10 +255,14 @@ void tela_editar_venda(void) {
     Enter();
 }
 
-// Excluir uma venda
+
 void tela_excluir_venda(void) {
     carregar_vendas_binario();
-    if (qtd_vendas == 0) { printf("Nenhuma venda cadastrada.\n"); Enter(); return; }
+    if (qtd_vendas == 0) { 
+        printf("Nenhuma venda cadastrada.\n"); 
+        Enter(); 
+        return; 
+    }
 
     char entrada[64];
     int id;
@@ -253,8 +270,15 @@ void tela_excluir_venda(void) {
     fgets(entrada, sizeof(entrada), stdin);
     id = atoi(entrada);
 
+    int encontrado = 0;
+
     for (int i = 0; i < qtd_vendas; i++) {
         if (vendas[i].id == id) {
+            encontrado = 1;
+
+            // Exclusão lógica: marcar como inativa
+            vendas[i].status = 'I';
+
             // devolver estoque da venda
             float preco;
             int estoque;
@@ -263,17 +287,21 @@ void tela_excluir_venda(void) {
                 atualizar_estoque_bicicleta(vendas[i].id_bicicleta, estoque);
             }
 
-            // remove venda do array
-            for (int j = i; j < qtd_vendas - 1; j++) vendas[j] = vendas[j + 1];
-            qtd_vendas--;
-            if (!salvar_vendas_binario()) { printf("Erro ao salvar vendas.\n"); Enter(); return; }
+            if (!salvar_vendas_binario()) { 
+                printf("Erro ao salvar vendas.\n"); 
+                Enter(); 
+                return; 
+            }
 
-            printf("Venda excluída com sucesso!\n");
+            printf("Venda inativada com sucesso!\n");
             Enter();
             return;
         }
     }
 
-    printf("Venda não encontrada.\n");
-    Enter();
+    if (!encontrado) {
+        printf("Venda não encontrada.\n");
+        Enter();
+    }
 }
+
