@@ -57,12 +57,13 @@ int cliente_existe_arquivo(const char *cpf) {
     fclose(arq);
     return 0;
 }
-
+// ======================== Cadastrar ==============================
 void tela_cadastrar_cliente(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "ab");
     if (!fp) { printf("Erro ao abrir o arquivo de clientes.\n"); Enter(); return; }
 
     Cliente novo;
+    novo.status = 'A';
     system("cls||clear");
     printf("=== Cadastro de Cliente ===\n");
 
@@ -91,6 +92,8 @@ void tela_cadastrar_cliente(void) {
     Enter();
 }
 
+
+// ======================== VER ==============================
 void tela_ver_clientes(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
     if (!fp) { printf("Nenhum cliente cadastrado ainda.\n"); Enter(); return; }
@@ -100,14 +103,15 @@ void tela_ver_clientes(void) {
     system("cls||clear");
     printf("=== Clientes Cadastrados ===\n\n");
     while (fread(&c, sizeof(Cliente), 1, fp) == 1) {
-        printf("%d. Nome: %s | Email: %s | Cidade: %s | CPF: %s\n",
-               ++count, c.nome, c.email, c.cidade, c.cpf);
-    }
+        if (c.status == 'I') continue; // pula inativos
+            printf("%d. Nome: %s | Email: %s | Cidade: %s | CPF: %s\n",
+           ++count, c.nome, c.email, c.cidade, c.cpf);
+}
     if (count == 0) printf("Nenhum cliente encontrado.\n");
     fclose(fp);
     Enter();
 }
-
+// ======================== PESQUISAR ==============================
 void tela_pesquisar_cliente(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
     if (!fp) { printf("Erro ao abrir arquivo.\n"); Enter(); return; }
@@ -121,6 +125,7 @@ void tela_pesquisar_cliente(void) {
     fgets(cpfBuscado, TAM_CPF, stdin); cpfBuscado[strcspn(cpfBuscado, "\n")] = 0;
 
     while (fread(&c, sizeof(Cliente), 1, fp) == 1) {
+        if (c.status == 'I') continue;
         if (strcmp(c.cpf, cpfBuscado) == 0) {
             printf("\n=== Cliente encontrado ===\n");
             printf("Nome: %s\nEmail: %s\nCidade: %s\nCPF: %s\n",
@@ -134,7 +139,7 @@ void tela_pesquisar_cliente(void) {
     fclose(fp);
     Enter();
 }
-
+// ======================== EDITAR ==============================
 void tela_editar_cliente(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
     if (!fp) { printf("Erro ao abrir o arquivo.\n"); Enter(); return; }
@@ -182,40 +187,71 @@ void tela_editar_cliente(void) {
 
     Enter();
 }
-
+// ======================== EXCLUIR ==============================
 void tela_excluir_cliente(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
-    if (!fp) { printf("Erro ao abrir arquivo.\n"); Enter(); return; }
+    if (!fp) { 
+        printf("Erro ao abrir arquivo.\n"); 
+        Enter(); 
+        return; 
+    }
 
     FILE *temp = fopen(TEMP_CLIENTE, "wb");
-    if (!temp) { fclose(fp); printf("Erro ao criar arquivo temporário.\n"); Enter(); return; }
+    if (!temp) { 
+        fclose(fp); 
+        printf("Erro ao criar arquivo temporário.\n"); 
+        Enter(); 
+        return; 
+    }
 
     char cpf[TAM_CPF];
     Cliente c;
     int encontrado = 0;
+    int tipo_exclusao;
 
     system("cls||clear");
     printf("Digite o CPF do cliente a excluir: ");
-    fgets(cpf, TAM_CPF, stdin); cpf[strcspn(cpf, "\n")] = 0;
+    fgets(cpf, TAM_CPF, stdin); 
+    cpf[strcspn(cpf, "\n")] = 0;
+
+    printf("============== Tipo de exclusão =============\n");
+    printf("= 1. Exclusão lógica (inativar cliente)    =\n");
+    printf("= 2. Exclusão física (remover do sistema)  =\n");
+    printf("============================================\n");
+    printf("Escolha uma opção: ");
+    scanf("%d", &tipo_exclusao);
+    getchar();
 
     while (fread(&c, sizeof(Cliente), 1, fp) == 1) {
-        if (strcmp(c.cpf, cpf) != 0) fwrite(&c, sizeof(Cliente), 1, temp);
-        else encontrado = 1;
+        if (strcmp(c.cpf, cpf) == 0) {
+            encontrado = 1;
+            if (tipo_exclusao == 1) {
+                c.status = 'I'; // Exclusão lógica
+                printf("Cliente inativado com sucesso.\n");
+                fwrite(&c, sizeof(Cliente), 1, temp);
+            }
+          
+        } else {
+            fwrite(&c, sizeof(Cliente), 1, temp);
+        }
     }
 
     fclose(fp);
     fclose(temp);
+
     remove(ARQ_CLIENTES);
     rename(TEMP_CLIENTE, ARQ_CLIENTES);
 
-    if (encontrado) {
+    if (encontrado && tipo_exclusao == 2) {
         printf("===================================\n");
-        printf("= Exclusão realizada com sucesso! =\n");
+        printf("= Cliente excluído com sucesso!    =\n");
         printf("===================================\n");
-    } else {
-        printf("===========================\n");
-        printf("= Cliente não encontrado! =\n");
-        printf("===========================\n");
     }
+     else if (!encontrado) {
+        printf("===================================\n");
+        printf("= Cliente não encontrado!         =\n");
+        printf("===================================\n");
+     }
+
     Enter();
 }

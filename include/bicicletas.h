@@ -14,6 +14,7 @@ typedef struct {
     float preco;
     int estoque;
     int id;
+    char status; // 'A' para ativo, 'I' para inativo
 } Bicicleta;
 
 extern Bicicleta bicicletas[MAX_BICICLETAS];

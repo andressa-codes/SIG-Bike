@@ -12,6 +12,7 @@ typedef struct {
     char email[TAM_EMAIL];
     char cidade[TAM_CIDADE];
     char cpf[TAM_CPF];
+    char status; // 'A' para ativo, 'I' para inativo
 } Cliente;
 
 extern Cliente clientes[MAX_CLIENTES];
