@@ -141,14 +141,59 @@ int validar_marca_modelo(const char *txt) {
 
 
 
-int validar_ano(int ano) {
-    return (ano >= 1900 && ano <= 2025);
+int validar_ano(const char *ano) {
+    int len = 0;
+
+    for (int i = 0; ano[i] != '\0'; i++) {
+        unsigned char c = ano[i];
+        if (!isdigit(c))
+            return 0;
+        len++;
+    }
+
+    if (len != 4)
+        return 0;
+
+    int valor = atoi(ano);
+    if (valor < 1900 || valor > 2025)
+        return 0;
+
+    return 1;
 }
 
-int validar_preco(float preco) {
-    return preco > 0;
+
+
+int validar_estoque(const char *estoque) {
+    for (int i = 0; estoque[i] != '\0'; i++) {
+        unsigned char c = estoque[i];
+
+        // só aceita dígitos de 0 a 9
+        if (c >= '0' && c <= '9')
+            continue;
+
+        return 0; // se tiver qualquer outro caractere, inválido
+    }
+
+    return 1; // válido
 }
 
-int validar_estoque(int estoque) {
-    return estoque >= 0;
+
+int validar_preco(const char *preco) {
+    int separador = 0; // conta ponto ou vírgula
+
+    for (int i = 0; preco[i] != '\0'; i++) {
+        unsigned char c = preco[i];
+
+        if (c >= '0' && c <= '9')
+            continue;
+
+        if ((c == '.' || c == ',') && separador == 0) {
+            separador = 1; // permite apenas um separador decimal
+            continue;
+        }
+
+        return 0; // caractere inválido
+    }
+
+    return 1; // válido
 }

@@ -8,8 +8,8 @@ int validar_cpf(const char cpf[]);
 int validar_cargo(const char cargo[]);
 int validar_cidade(const char cidade[]);
 int validar_marca_modelo(const char txt[]);
-int validar_ano(int ano);
-int validar_preco(float preco);
-int validar_estoque(int estoque);
+int validar_ano(const char *ano);
+int validar_preco(const char *preco);
+int validar_estoque(const char *estoque);
 
 #endif

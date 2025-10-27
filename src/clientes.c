@@ -10,6 +10,7 @@
 #define ARQ_CLIENTES "dados/clientes.dat"
 #define TEMP_CLIENTE "dados/temp_clientes.dat"
 
+
 // ======================== VModulo inicial ==============================
 
 void modulo_clientes(void) {

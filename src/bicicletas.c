@@ -63,6 +63,7 @@ void modulo_bicicletas(void) {
                 printf("Opção inválida!\n");
                 Enter();
         }
+        system("cls||clear");
     } while(opcao != 6);
 }
 
@@ -90,25 +91,34 @@ void tela_cadastrar_bicicleta(void){
         printf("Marca: ");
         fgets(novo.marca, TAM_MARCA, stdin);
         novo.marca[strcspn(novo.marca, "\n")] = 0;
-        if (!validar_marca_modelo(novo.marca))
+    if (!validar_marca_modelo(novo.marca))
             printf("Erro: a marca deve conter apenas letras, números e espaços.\n");
     } while (!validar_marca_modelo(novo.marca));
+
+
 
     do {
         printf("Modelo: ");
         fgets(novo.modelo, TAM_MODELO, stdin);
         novo.modelo[strcspn(novo.modelo, "\n")] = 0;
-        if (!validar_marca_modelo(novo.modelo))
+    if (!validar_marca_modelo(novo.modelo))
             printf("Erro: o modelo deve conter apenas letras, números e espaços.\n");
     } while (!validar_marca_modelo(novo.modelo));
 
+    char anoStr[10];
     do {
         printf("Ano: ");
-        scanf("%d", &novo.ano);
-        getchar();
-        if (!validar_ano(novo.ano))
-            printf("Erro: o ano deve ter 4 dígitos e estar entre 1900 e 2025.\n");
-    } while (!validar_ano(novo.ano));
+        fgets(anoStr, sizeof(anoStr), stdin);
+        anoStr[strcspn(anoStr, "\n")] = 0;
+
+    if (!validar_ano(anoStr))
+        printf("Erro: o ano deve ter 4 dígitos e estar entre 1900 e 2025.\n");
+
+} while (!validar_ano(anoStr));
+
+novo.ano = atoi(anoStr);
+
+
 
     do {
         printf("Cor: ");
@@ -118,21 +128,37 @@ void tela_cadastrar_bicicleta(void){
             printf("Erro: a cor deve conter apenas letras e espaços.\n");
     } while (!validar_nome(novo.cor));
 
+
+
+    char precoStr[20];
     do {
         printf("Preço: ");
-        scanf("%f", &novo.preco);
-        getchar();
-        if (!validar_preco(novo.preco))
-            printf("Erro: o preço deve ser um valor positivo.\n");
-    } while (!validar_preco(novo.preco));
+        fgets(precoStr, sizeof(precoStr), stdin);
+        precoStr[strcspn(precoStr, "\n")] = 0;  
 
+    if (!validar_preco(precoStr)) {
+            printf("Erro: o preço deve ser um valor numérico.\n");
+        }
+    } while (!validar_preco(precoStr));
+
+    novo.preco = atof(precoStr);
+
+
+
+    
+    char estoqueStr[10];
     do {
         printf("Estoque: ");
-        scanf("%d", &novo.estoque);
-        getchar();
-        if (!validar_estoque(novo.estoque))
-            printf("Erro: o estoque deve ser um número inteiro maior ou igual a 0.\n");
-    } while (!validar_estoque(novo.estoque));
+        fgets(estoqueStr, sizeof(estoqueStr), stdin);
+        estoqueStr[strcspn(estoqueStr, "\n")] = 0;
+
+    if (!validar_estoque(estoqueStr)) {
+            printf("Erro: o estoque deve ser um número inteiro.\n");
+        }
+    } while (!validar_estoque(estoqueStr));
+
+    novo.estoque = atoi(estoqueStr); 
+
     
     arq = fopen(ARQ_BICICLETAS, "ab");
     if (arq == NULL) {
@@ -150,6 +176,7 @@ void tela_cadastrar_bicicleta(void){
     printf("===================================\n");
     Enter();
 }
+
 
 // ======================== LISTAR ==============================
 void tela_ver_bicicletas(void){
