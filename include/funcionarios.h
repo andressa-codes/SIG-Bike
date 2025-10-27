@@ -8,6 +8,9 @@
 
 #define ARQ_FUNCIONARIOS "dados/funcionarios.dat"  // Corrigido o caminho do arquivo
 
+
+
+
 typedef struct {
     char nome[TAM_NOME_FUNC];
     char email[TAM_EMAIL_FUNC];
@@ -19,6 +22,9 @@ typedef struct {
 // Módulos principais
 void modulo_funcionarios(void);
 
+
+// Declarações das funções (sem o corpo {})
+
 // Telas de interação
 void tela_cadastrar_funcionario(void);
 void tela_ver_funcionarios(void);
@@ -28,5 +34,6 @@ void tela_excluir_funcionario(void);
 
 // Função utilitária para verificação de existência
 int funcionario_existe_arquivo(const char *cpf);
+
 
 #endif

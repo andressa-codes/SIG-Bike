@@ -1,11 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "../include/tela_inicial.h"
 #include "../include/bicicletas.h"
+#include "../include/validations.h"
 
 #define ARQ_BICICLETAS "dados/bicicletas.dat"
 #define TEMP_BICICLETA  "dados/temp_bicicletas.dat"
+
+
+
+
+// ======================== MÓDULO PRINCIPAL ==============================
 
 void modulo_bicicletas(void);
 void tela_cadastrar_bicicleta(void);
@@ -79,29 +86,53 @@ void tela_cadastrar_bicicleta(void){
 
     novo.id = ultimo_id + 1;
 
-    printf("Marca: ");
-    fgets(novo.marca, TAM_MARCA, stdin);
-    novo.marca[strcspn(novo.marca, "\n")] = 0;
+    do {
+        printf("Marca: ");
+        fgets(novo.marca, TAM_MARCA, stdin);
+        novo.marca[strcspn(novo.marca, "\n")] = 0;
+        if (!validar_marca_modelo(novo.marca))
+            printf("Erro: a marca deve conter apenas letras, números e espaços.\n");
+    } while (!validar_marca_modelo(novo.marca));
 
-    printf("Modelo: ");
-    fgets(novo.modelo, TAM_MODELO, stdin);
-    novo.modelo[strcspn(novo.modelo, "\n")] = 0;
+    do {
+        printf("Modelo: ");
+        fgets(novo.modelo, TAM_MODELO, stdin);
+        novo.modelo[strcspn(novo.modelo, "\n")] = 0;
+        if (!validar_marca_modelo(novo.modelo))
+            printf("Erro: o modelo deve conter apenas letras, números e espaços.\n");
+    } while (!validar_marca_modelo(novo.modelo));
 
-    printf("Ano: ");
-    scanf("%d", &novo.ano);
-    getchar();
+    do {
+        printf("Ano: ");
+        scanf("%d", &novo.ano);
+        getchar();
+        if (!validar_ano(novo.ano))
+            printf("Erro: o ano deve ter 4 dígitos e estar entre 1900 e 2025.\n");
+    } while (!validar_ano(novo.ano));
 
-    printf("Cor: ");
-    fgets(novo.cor, TAM_COR, stdin);
-    novo.cor[strcspn(novo.cor, "\n")] = 0;
+    do {
+        printf("Cor: ");
+        fgets(novo.cor, TAM_COR, stdin);
+        novo.cor[strcspn(novo.cor, "\n")] = 0;
+        if (!validar_nome(novo.cor))
+            printf("Erro: a cor deve conter apenas letras e espaços.\n");
+    } while (!validar_nome(novo.cor));
 
-    printf("Preço: ");
-    scanf("%f", &novo.preco);
-    getchar();
+    do {
+        printf("Preço: ");
+        scanf("%f", &novo.preco);
+        getchar();
+        if (!validar_preco(novo.preco))
+            printf("Erro: o preço deve ser um valor positivo.\n");
+    } while (!validar_preco(novo.preco));
 
-    printf("Estoque: ");
-    scanf("%d", &novo.estoque);
-    getchar();
+    do {
+        printf("Estoque: ");
+        scanf("%d", &novo.estoque);
+        getchar();
+        if (!validar_estoque(novo.estoque))
+            printf("Erro: o estoque deve ser um número inteiro maior ou igual a 0.\n");
+    } while (!validar_estoque(novo.estoque));
     
     arq = fopen(ARQ_BICICLETAS, "ab");
     if (arq == NULL) {
@@ -136,12 +167,11 @@ void tela_ver_bicicletas(void){
     }
 
     while (fread(&b, sizeof(Bicicleta), 1, arq) == 1) {
-        if (b.status == 'I') continue; // pula inativas
-
+        if (b.status == 'I') continue;
         printf("ID: %d | Marca: %s | Modelo: %s | Ano: %d | Cor: %s | Preço: %.2f | Estoque: %d\n",
             b.id, b.marca, b.modelo, b.ano, b.cor, b.preco, b.estoque);
         count++;
-}
+    }
 
     if (count == 0)
         printf("Nenhuma bicicleta cadastrada.\n");
@@ -169,9 +199,9 @@ void tela_pesquisar_bicicleta(void){
     getchar();
 
     while (fread(&b, sizeof(Bicicleta), 1, arq) == 1) {
-    if (b.status == 'I') continue; 
-    if (b.id == idBuscado) {
-        printf("\n--- Bicicleta Encontrada ---\n");
+        if (b.status == 'I') continue;
+        if (b.id == idBuscado) {
+            printf("\n--- Bicicleta Encontrada ---\n");
             printf("ID: %d\nMarca: %s\nModelo: %s\nAno: %d\nCor: %s\nPreço: %.2f\nEstoque: %d\n",
                    b.id, b.marca, b.modelo, b.ano, b.cor, b.preco, b.estoque);
             encontrado = 1;
@@ -209,28 +239,32 @@ void tela_editar_bicicleta(void) {
         if (b.id == idBuscado) {
             encontrado = 1;
 
-            // 🧠 Aqui entra o trecho que te mostrei
-            if (b.status == 'I') {
+             if (b.status == 'I') {
                 printf("Essa bicicleta está inativa e não pode ser editada.\n");
                 fclose(arq);
                 Enter();
-                return; // sai da função sem permitir edição
+                return;
             }
 
-            printf("\n=== Bicicleta Encontrada ===\n");
-            printf("Marca atual: %s\n", b.marca);
-            printf("Novo valor (ou Enter para manter): ");
-            fgets(b.marca, TAM_MARCA, stdin);
-            b.marca[strcspn(b.marca, "\n")] = 0;
+            do {
+                printf("Nova marca (atual: %s): ", b.marca);
+                fgets(b.marca, TAM_MARCA, stdin);
+                b.marca[strcspn(b.marca, "\n")] = 0;
+                if (strlen(b.marca) > 0 && !validar_marca_modelo(b.marca))
+                    printf("Erro: a marca deve conter apenas letras, números e espaços.\n");
+            } while (strlen(b.marca) > 0 && !validar_marca_modelo(b.marca));
 
-            // Exemplo editando outro campo:
-            printf("Novo preço (ou 0 para manter): ");
-            float novoPreco;
-            scanf("%f", &novoPreco);
-            getchar();
-            if (novoPreco > 0) b.preco = novoPreco;
+            do {
+                printf("Novo preço (atual: %.2f): ", b.preco);
+                float novoPreco;
+                scanf("%f", &novoPreco);
+                getchar();
+                if (novoPreco > 0)
+                    b.preco = novoPreco;
+                else if (novoPreco < 0)
+                    printf("Erro: o preço deve ser positivo.\n");
+            } while (0); // apenas para consistência
 
-            // Volta o ponteiro 1 registro atrás e regrava
             fseek(arq, -sizeof(Bicicleta), SEEK_CUR);
             fwrite(&b, sizeof(Bicicleta), 1, arq);
 
@@ -285,12 +319,11 @@ void tela_excluir_bicicleta(void) {
         if (b.id == id_excluir) {
             encontrado = 1;
             if (tipo_exclusao == 1) {
-                b.status = 'I'; // Exclusão lógica
+                b.status = 'I';
                 printf("Bicicleta inativada com sucesso.\n");
                 fwrite(&b, sizeof(Bicicleta), 1, temp);
             }
-            // Exclusão física: não escreve o registro no temp
-        } else {
+         } else {
             fwrite(&b, sizeof(Bicicleta), 1, temp);
         }
     }
@@ -313,7 +346,8 @@ void tela_excluir_bicicleta(void) {
 
     Enter();
 }
-// ======================== FUNÇÕES AUXILIARES ==============================
+
+// ======================== AUXILIARES ==============================
 int obter_info_bicicleta(int id, float *preco, int *estoque) {
     FILE *arq = fopen(ARQ_BICICLETAS, "rb");
     Bicicleta b;
@@ -335,7 +369,6 @@ int obter_info_bicicleta(int id, float *preco, int *estoque) {
     return 0; 
 }
 
-// Função de atualizar o estoque
 void atualizar_estoque_bicicleta(int id, int novo_estoque) {
     FILE *arq = fopen(ARQ_BICICLETAS, "r+b");
     Bicicleta b;
@@ -356,4 +389,3 @@ void atualizar_estoque_bicicleta(int id, int novo_estoque) {
 
     fclose(arq);
 }
-

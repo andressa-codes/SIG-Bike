@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "../include/tela_inicial.h"
 #include "../include/clientes.h"
+#include "../include/validations.h"
+
 
 #define ARQ_CLIENTES "dados/clientes.dat"
 #define TEMP_CLIENTE "dados/temp_clientes.dat"
+
+// ======================== VModulo inicial ==============================
 
 void modulo_clientes(void) {
     int opcao;
@@ -57,6 +62,7 @@ int cliente_existe_arquivo(const char *cpf) {
     fclose(arq);
     return 0;
 }
+
 // ======================== Cadastrar ==============================
 void tela_cadastrar_cliente(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "ab");
@@ -67,14 +73,41 @@ void tela_cadastrar_cliente(void) {
     system("cls||clear");
     printf("=== Cadastro de Cliente ===\n");
 
-    printf("Nome: ");
-    fgets(novo.nome, TAM_NOME, stdin); novo.nome[strcspn(novo.nome, "\n")] = 0;
-    printf("Email: ");
-    fgets(novo.email, TAM_EMAIL, stdin); novo.email[strcspn(novo.email, "\n")] = 0;
-    printf("Cidade: ");
-    fgets(novo.cidade, TAM_CIDADE, stdin); novo.cidade[strcspn(novo.cidade, "\n")] = 0;
-    printf("CPF (apenas números): ");
-    fgets(novo.cpf, TAM_CPF, stdin); novo.cpf[strcspn(novo.cpf, "\n")] = 0;
+    // Nome
+    do {
+        printf("Nome: ");
+        fgets(novo.nome, TAM_NOME, stdin); novo.nome[strcspn(novo.nome, "\n")] = 0;
+        if (!validar_nome(novo.nome) || strlen(novo.nome) == 0) {
+            printf("Erro: o nome deve conter apenas letras e espaços.\n");
+        }
+    } while (!validar_nome(novo.nome) || strlen(novo.nome) == 0);
+
+    // Email
+    do {
+        printf("Email (minúsculas, sem espaços, deve conter '@' e '.'): ");
+        fgets(novo.email, TAM_EMAIL, stdin); novo.email[strcspn(novo.email, "\n")] = 0;
+        if (!validar_email(novo.email)) {
+            printf("Erro: o email deve estar em minúsculas e sem acento, não conter espaços e ter '@' e '.'\n");
+        }
+    } while (!validar_email(novo.email));
+
+    // Cidade
+    do {
+        printf("Cidade: ");
+        fgets(novo.cidade, TAM_CIDADE, stdin); novo.cidade[strcspn(novo.cidade, "\n")] = 0;
+        if (!validar_cidade(novo.cidade) || strlen(novo.cidade) == 0) {
+            printf("Erro: a cidade deve conter apenas letras e espaços.\n");
+        }
+    } while (!validar_cidade(novo.cidade) || strlen(novo.cidade) == 0);
+
+    // CPF
+    do {
+        printf("CPF (apenas números, 11 dígitos): ");
+        fgets(novo.cpf, TAM_CPF, stdin); novo.cpf[strcspn(novo.cpf, "\n")] = 0;
+        if (!validar_cpf(novo.cpf)) {
+            printf("Erro: o CPF deve conter apenas números e ter exatamente 11 dígitos.\n");
+        }
+    } while (!validar_cpf(novo.cpf));
 
     if (cliente_existe_arquivo(novo.cpf)) {
         printf("\nErro: já existe um cliente com esse CPF.\n");
@@ -92,7 +125,6 @@ void tela_cadastrar_cliente(void) {
     Enter();
 }
 
-
 // ======================== VER ==============================
 void tela_ver_clientes(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
@@ -103,14 +135,15 @@ void tela_ver_clientes(void) {
     system("cls||clear");
     printf("=== Clientes Cadastrados ===\n\n");
     while (fread(&c, sizeof(Cliente), 1, fp) == 1) {
-        if (c.status == 'I') continue; // pula inativos
-            printf("%d. Nome: %s | Email: %s | Cidade: %s | CPF: %s\n",
-           ++count, c.nome, c.email, c.cidade, c.cpf);
-}
+        if (c.status == 'I') continue;
+        printf("%d. Nome: %s | Email: %s | Cidade: %s | CPF: %s\n",
+               ++count, c.nome, c.email, c.cidade, c.cpf);
+    }
     if (count == 0) printf("Nenhum cliente encontrado.\n");
     fclose(fp);
     Enter();
 }
+
 // ======================== PESQUISAR ==============================
 void tela_pesquisar_cliente(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
@@ -139,6 +172,7 @@ void tela_pesquisar_cliente(void) {
     fclose(fp);
     Enter();
 }
+
 // ======================== EDITAR ==============================
 void tela_editar_cliente(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
@@ -160,12 +194,32 @@ void tela_editar_cliente(void) {
             encontrado = 1;
             printf("\n--- Editando cliente %s ---\n", c.nome);
 
-            printf("Novo Nome: ");
-            fgets(c.nome, TAM_NOME, stdin); c.nome[strcspn(c.nome, "\n")] = 0;
-            printf("Novo Email: ");
-            fgets(c.email, TAM_EMAIL, stdin); c.email[strcspn(c.email, "\n")] = 0;
-            printf("Nova Cidade: ");
-            fgets(c.cidade, TAM_CIDADE, stdin); c.cidade[strcspn(c.cidade, "\n")] = 0;
+            // Nome
+            do {
+                printf("Novo Nome: ");
+                fgets(c.nome, TAM_NOME, stdin); c.nome[strcspn(c.nome, "\n")] = 0;
+                if (!validar_nome(c.nome) || strlen(c.nome) == 0) {
+                    printf("Erro: o nome deve conter apenas letras e espaços.\n");
+                }
+            } while (!validar_nome(c.nome) || strlen(c.nome) == 0);
+
+            // Email
+            do {
+                printf("Novo Email (minúsculas, sem espaços, deve conter '@' e '.'): ");
+                fgets(c.email, TAM_EMAIL, stdin); c.email[strcspn(c.email, "\n")] = 0;
+                if (!validar_email(c.email)) {
+                    printf("Erro: o email deve estar em minúsculas e sem acento, não conter espaços e ter '@' e '.'\n");
+                }
+            } while (!validar_email(c.email));
+
+            // Cidade
+            do {
+                printf("Nova Cidade: ");
+                fgets(c.cidade, TAM_CIDADE, stdin); c.cidade[strcspn(c.cidade, "\n")] = 0;
+                if (!validar_cidade(c.cidade) || strlen(c.cidade) == 0) {
+                    printf("Erro: a cidade deve conter apenas letras e espaços.\n");
+                }
+            } while (!validar_cidade(c.cidade) || strlen(c.cidade) == 0);
         }
         fwrite(&c, sizeof(Cliente), 1, temp);
     }
@@ -187,6 +241,7 @@ void tela_editar_cliente(void) {
 
     Enter();
 }
+
 // ======================== EXCLUIR ==============================
 void tela_excluir_cliente(void) {
     FILE *fp = fopen(ARQ_CLIENTES, "rb");
@@ -226,12 +281,11 @@ void tela_excluir_cliente(void) {
         if (strcmp(c.cpf, cpf) == 0) {
             encontrado = 1;
             if (tipo_exclusao == 1) {
-                c.status = 'I'; // Exclusão lógica
+                c.status = 'I';
                 printf("Cliente inativado com sucesso.\n");
                 fwrite(&c, sizeof(Cliente), 1, temp);
             }
-          
-        } else {
+         } else {
             fwrite(&c, sizeof(Cliente), 1, temp);
         }
     }
@@ -246,12 +300,11 @@ void tela_excluir_cliente(void) {
         printf("===================================\n");
         printf("= Cliente excluído com sucesso!    =\n");
         printf("===================================\n");
-    }
-     else if (!encontrado) {
+    } else if (!encontrado) {
         printf("===================================\n");
         printf("= Cliente não encontrado!         =\n");
         printf("===================================\n");
-     }
+    }
 
     Enter();
 }

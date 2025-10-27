@@ -6,6 +6,8 @@
 #define TAM_MODELO 50
 #define TAM_COR 30
 
+#define ARQ_BICICLETAS "dados/bicicletas.dat"
+
 typedef struct {
     char marca[TAM_MARCA];
     char modelo[TAM_MODELO];
