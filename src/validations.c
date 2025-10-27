@@ -167,19 +167,18 @@ int validar_estoque(const char *estoque) {
     for (int i = 0; estoque[i] != '\0'; i++) {
         unsigned char c = estoque[i];
 
-        // só aceita dígitos de 0 a 9
         if (c >= '0' && c <= '9')
             continue;
 
-        return 0; // se tiver qualquer outro caractere, inválido
+        return 0; 
     }
 
-    return 1; // válido
+    return 1; 
 }
 
 
 int validar_preco(const char *preco) {
-    int separador = 0; // conta ponto ou vírgula
+    int separador = 0; 
 
     for (int i = 0; preco[i] != '\0'; i++) {
         unsigned char c = preco[i];
@@ -192,8 +191,8 @@ int validar_preco(const char *preco) {
             continue;
         }
 
-        return 0; // caractere inválido
+        return 0; 
     }
 
-    return 1; // válido
+    return 1; 
 }

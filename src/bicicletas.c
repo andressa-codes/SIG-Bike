@@ -245,6 +245,7 @@ void tela_pesquisar_bicicleta(void){
 }
 
 // ======================== EDITAR ==============================
+
 void tela_editar_bicicleta(void) {
     FILE *arq = fopen(ARQ_BICICLETAS, "r+b");
     if (!arq) {
@@ -260,38 +261,114 @@ void tela_editar_bicicleta(void) {
     printf("===== Editar Bicicleta =====\n");
     printf("Digite o ID da bicicleta que deseja editar: ");
     scanf("%d", &idBuscado);
-    getchar();
+    getchar(); // limpa o \n deixado pelo scanf
 
     while (fread(&b, sizeof(Bicicleta), 1, arq) == 1) {
         if (b.id == idBuscado) {
             encontrado = 1;
 
-             if (b.status == 'I') {
+            if (b.status == 'I') {
                 printf("Essa bicicleta está inativa e não pode ser editada.\n");
                 fclose(arq);
                 Enter();
                 return;
             }
 
+            printf("\n--- Editando Bicicleta ID %d ---\n", b.id);
+            printf("(Pressione ENTER sem digitar nada para manter o valor atual)\n\n");
+
+            // === Marca ===
+            char marcaTemp[TAM_MARCA];
             do {
                 printf("Nova marca (atual: %s): ", b.marca);
-                fgets(b.marca, TAM_MARCA, stdin);
-                b.marca[strcspn(b.marca, "\n")] = 0;
-                if (strlen(b.marca) > 0 && !validar_marca_modelo(b.marca))
-                    printf("Erro: a marca deve conter apenas letras, números e espaços.\n");
-            } while (strlen(b.marca) > 0 && !validar_marca_modelo(b.marca));
+                fgets(marcaTemp, sizeof(marcaTemp), stdin);
+                marcaTemp[strcspn(marcaTemp, "\n")] = 0;
 
+                if (strlen(marcaTemp) == 0) break; // mantém atual
+                if (!validar_marca_modelo(marcaTemp))
+                    printf("Erro: a marca deve conter apenas letras, números e espaços.\n");
+            } while (strlen(marcaTemp) > 0 && !validar_marca_modelo(marcaTemp));
+
+            if (strlen(marcaTemp) > 0)
+                strcpy(b.marca, marcaTemp);
+
+
+            // === Modelo ===
+            char modeloTemp[TAM_MODELO];
+            do {
+                printf("Novo modelo (atual: %s): ", b.modelo);
+                fgets(modeloTemp, sizeof(modeloTemp), stdin);
+                modeloTemp[strcspn(modeloTemp, "\n")] = 0;
+
+                if (strlen(modeloTemp) == 0) break;
+                if (!validar_marca_modelo(modeloTemp))
+                    printf("Erro: o modelo deve conter apenas letras, números e espaços.\n");
+            } while (strlen(modeloTemp) > 0 && !validar_marca_modelo(modeloTemp));
+
+            if (strlen(modeloTemp) > 0)
+                strcpy(b.modelo, modeloTemp);
+ // === Ano ===
+            char anoStr[10];
+            do {
+                printf("Novo ano (atual: %d): ", b.ano);
+                fgets(anoStr, sizeof(anoStr), stdin);
+                anoStr[strcspn(anoStr, "\n")] = 0;
+
+                if (strlen(anoStr) == 0) break; // mantém o atual
+                if (!validar_ano(anoStr))
+                    printf("Erro: o ano deve ter 4 dígitos e estar entre 1900 e 2025.\n");
+            } while (strlen(anoStr) > 0 && !validar_ano(anoStr));
+
+            if (strlen(anoStr) > 0)
+                b.ano = atoi(anoStr);
+
+            // === Cor ===
+            char corTemp[TAM_COR];
+            do {
+                printf("Nova cor (atual: %s): ", b.cor);
+                fgets(corTemp, sizeof(corTemp), stdin);
+                corTemp[strcspn(corTemp, "\n")] = 0;
+
+                if (strlen(corTemp) == 0) break;
+                if (!validar_nome(corTemp))
+                    printf("Erro: a cor deve conter apenas letras e espaços.\n");
+            } while (strlen(corTemp) > 0 && !validar_nome(corTemp));
+
+            if (strlen(corTemp) > 0)
+                strcpy(b.cor, corTemp);
+
+            // === Preço ===
+            char precoStr[20];
             do {
                 printf("Novo preço (atual: %.2f): ", b.preco);
-                float novoPreco;
-                scanf("%f", &novoPreco);
-                getchar();
-                if (novoPreco > 0)
-                    b.preco = novoPreco;
-                else if (novoPreco < 0)
-                    printf("Erro: o preço deve ser positivo.\n");
-            } while (0); // apenas para consistência
+                fgets(precoStr, sizeof(precoStr), stdin);
+                precoStr[strcspn(precoStr, "\n")] = 0;
 
+                if (strlen(precoStr) == 0) break; 
+                if (!validar_preco(precoStr))
+                    printf("Erro: o preço deve ser um valor numérico válido.\n");
+            } while (strlen(precoStr) > 0 && !validar_preco(precoStr));
+
+            if (strlen(precoStr) > 0)
+                b.preco = atof(precoStr);
+
+
+            // === Estoque ===
+            char estoqueStr[10];
+            do {
+                printf("Novo estoque (atual: %d): ", b.estoque);
+                fgets(estoqueStr, sizeof(estoqueStr), stdin);
+                estoqueStr[strcspn(estoqueStr, "\n")] = 0;
+
+                if (strlen(estoqueStr) == 0) break; 
+                if (!validar_estoque(estoqueStr))
+                    printf("Erro: o estoque deve conter apenas números inteiros.\n");
+            } while (strlen(estoqueStr) > 0 && !validar_estoque(estoqueStr));
+
+            if (strlen(estoqueStr) > 0)
+                b.estoque = atoi(estoqueStr);
+
+            // === Grava as alterações ===
             fseek(arq, -sizeof(Bicicleta), SEEK_CUR);
             fwrite(&b, sizeof(Bicicleta), 1, arq);
 
