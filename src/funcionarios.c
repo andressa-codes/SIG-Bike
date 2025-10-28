@@ -7,6 +7,7 @@
 #include "../include/validations.h"
 
 #define TEMP_FUNC "dados/temp_funcionarios.dat"
+#define ARQ_FUNCIONARIOS "dados/funcionarios.dat"
 
 void modulo_funcionarios(void) {
     int opcao;
@@ -208,7 +209,7 @@ void tela_editar_funcionario(void) {
             encontrado = 1;
             printf("\n--- Editando funcionário %s ---\n", f.nome);
 
-            // Validar Nome
+            
             do {
                 printf("Novo Nome: ");
                 fgets(f.nome, TAM_NOME_FUNC, stdin);
@@ -218,7 +219,7 @@ void tela_editar_funcionario(void) {
                 }
             } while (!validar_nome(f.nome) || strlen(f.nome) == 0);
 
-            // Validar Email
+            
             do {
                 printf("Novo Email (minúsculas, sem espaços, deve conter '@' e '.'): ");
                 fgets(f.email, TAM_EMAIL_FUNC, stdin);
@@ -228,7 +229,7 @@ void tela_editar_funcionario(void) {
                 }
             } while (!validar_email(f.email));
 
-            // Validar Cargo
+            
             do {
                 printf("Novo Cargo: ");
                 fgets(f.cargo, TAM_CARGO_FUNC, stdin);
@@ -238,7 +239,7 @@ void tela_editar_funcionario(void) {
                 }
             } while (!validar_cargo(f.cargo) || strlen(f.cargo) == 0);
 
-            // Validar CPF
+            
             do {
                 printf("Novo CPF (apenas números, 11 dígitos): ");
                 fgets(f.cpf, TAM_CPF_FUNC, stdin);
@@ -321,11 +322,11 @@ void tela_excluir_funcionario(void) {
         if (strcmp(f.cpf, cpf) == 0) {
             encontrado = 1;
             if (tipo_exclusao == 1) {
-                f.status = 'I'; // Exclusão lógica
+                f.status = 'I';
                 printf("Funcionário inativado com sucesso.\n");
                 fwrite(&f, sizeof(Funcionario), 1, temp);
             }
-            // Exclusão física: não escreve o registro no temp
+            
         } else {
             fwrite(&f, sizeof(Funcionario), 1, temp);
         }

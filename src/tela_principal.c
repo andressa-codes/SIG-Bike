@@ -21,10 +21,11 @@ void tela_principal(void) {
         printf("///                                                                         ///\n");
         printf("///                    = = = = = SIG-Bike = = = = =                         ///\n");
         printf("///                                                                         ///\n");
-        printf("///            1. Módulo bicicletas                                         ///\n");
-        printf("///            2. Módulo clientes                                           ///\n");
-        printf("///            3. Módulo vendas                                             ///\n");
-        printf("///            4. Módulo funcionários                                       ///\n");
+        printf("///            Escolha o módulo que deseja acessar:                         ///\n");
+        printf("///            1. Módulo clientes                                           ///\n");
+        printf("///            2. Módulo funcionários                                       ///\n");
+        printf("///            3. Módulo bicicletas                                         ///\n"); 
+        printf("///            4. Módulo vendas                                             ///\n"); 
         printf("///            5. Módulo Relatórios                                         ///\n");
         printf("///            6. Voltar ao menu principal                                  ///\n");
         printf("///                                                                         ///\n");
@@ -39,10 +40,10 @@ void tela_principal(void) {
         while (getchar() != '\n');
 
         switch (opcao) {
-            case 1: modulo_bicicletas(); break;
-            case 2: modulo_clientes(); break;
-            case 3: modulo_vendas(); break;
-            case 4: modulo_funcionarios(); break;
+            case 1: modulo_clientes(); break;
+            case 2: modulo_funcionarios(); break;
+            case 3: modulo_bicicletas(); break;
+            case 4: modulo_vendas(); break;
             case 6: return;
             default:
                 printf("Opção inválida! Tente novamente.\n");
